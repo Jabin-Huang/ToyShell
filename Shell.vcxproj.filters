@@ -14,4 +14,53 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="parser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="lexer.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="command.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hash.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="eval.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="shell.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="exec.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="command.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="variable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="general.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="token.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lexer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="exec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
