@@ -16,7 +16,7 @@ void _readch() {
 }
 
 int readch(char c) {
-  _readch();
+  _readch(); 
   if (lexer.peek != c) return 0;
   lexer.peek = ' ';
   return 1;
