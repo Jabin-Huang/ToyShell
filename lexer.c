@@ -1,33 +1,17 @@
-#include "lexer.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lexer.h"
 
-/* Reserved words.  These are only recognized as the first word of a
-   command. */
+/* Reserved words */
 Token word_token_alist[] = {
-    {"if", IF},
-    {"then", THEN},
-    {"else", ELSE},
-    {"elif", ELIF},
-    {"fi", FI},
-    {"case", CASE},
-    {"esac", ESAC},
-    {"for", FOR},
-    {"while", WHILE},
-    {"while", WHILE},
-    {"until", UNTIL},
-    {"do", DO},
-    {"done", DONE},
-    {"function", FUNCTION},
-    {"echo", BUILTIN},
-
-};
+    {"if", IF},       {"then", THEN},         {"else", ELSE},   {"elif", ELIF},
+    {"fi", FI},       {"case", CASE},         {"esac", ESAC},   {"for", FOR},
+    {"while", WHILE}, {"while", WHILE},       {"until", UNTIL}, {"do", DO},
+    {"done", DONE},   {"function", FUNCTION}, {"echo", BUILTIN}};
 
 void _readch() {
-  lexer.last = lexer.peek;
   lexer.peek = getchar();
 }
 
@@ -42,6 +26,7 @@ Token* newToken(char* str, unsigned int tag) {
   Token* tok = (Token*)malloc(sizeof(Token));
   tok->lexeme = str;
   tok->tag = tag;
+  lexer.last = tok;
   return tok;
 }
 
@@ -116,7 +101,7 @@ Token* add_Val(char* name) {
 }
 
 Token* scan() {
-  /* 忽略注释,空格 */
+  /* 忽略注释, 空格 */
   for (;; _readch()) {
     if (lexer.peek == '#') {
       do {
@@ -133,36 +118,42 @@ Token* scan() {
 
   /*运算符*/
   switch (lexer.peek) {
-    case '&':
+    case '&': {
       if (readch('&'))
         return newToken("&&", AND_AND);
       else
         return newToken("&", '&');
-    case '|':
+    }
+    case '|': {
       if (readch('|'))
         return newToken("||", OR_OR);
       else
         return newToken("|", '|');
-    case '=':
+    }
+    case '=': {
       if (readch('='))
         return newToken("==", EQ);
       else
         return newToken("=", '=');
-    case '!':
+    }
+    case '!': {
       if (readch('='))
         return newToken("!=", NE);
       else
         return newToken("!", '!');
-    case '>':
+    }
+    case '>': {
       if (readch('='))
         return newToken(">=", GE);
       else
         return newToken(">", '>');
-    case '<':
+    }
+    case '<': {
       if (readch('='))
         return newToken("<=", LE);
       else
         return newToken("<", '<');
+    }
     case '-': {
       char* str = readStr();
       if (str[1] == 'o')
@@ -182,11 +173,13 @@ Token* scan() {
           return newToken("-ge", GE);
         else if (strcmp(str, "-le") == 0)
           return newToken("-le", LE);
-        else
+        else if (lexer.last->tag == BUILTIN)
           return newToken(str, ARGS);
       } else
         return newToken("-", '-');
     }
+    default:
+      break;
   }
 
   /*数字*/
@@ -200,7 +193,6 @@ Token* scan() {
     str[len] = '\0';
     return newToken(str, NUM);
   }
-
   /*变量、保留词*/
   if (lexer.last != '$' && (isLetter(lexer.peek) || lexer.peek == '_')) {
     char* str = newStr(0);
@@ -263,7 +255,7 @@ Token* scan() {
     return newToken(str, STRING);
   }
 
-  //数学表达式计算
+  /*数学表达式计算*/
   if (lexer.peek == '(' || lexer.peek == ')') {
     char t = lexer.peek;
     _readch();
@@ -276,7 +268,7 @@ Token* scan() {
     }
   }
 
-  //字符串，文件测试 ?
+  /*字符串，文件测试 */
   if (lexer.peek == '[' || lexer.peek == ']') {
     char t = lexer.peek;
     _readch();
@@ -289,7 +281,7 @@ Token* scan() {
     }
   }
 
-  //文件路径, 规定反斜杠开头
+  /*文件路径, 规定反斜杠开头*/
   if (lexer.peek == '\\') {
     char* str = readStr();
     return newToken(str, FILE_PATH);

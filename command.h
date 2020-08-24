@@ -109,6 +109,7 @@ typedef struct for_com {
   Token *map_list; /* 待遍历的全体对象 */
   COMMAND *action; /*循环体内的命令*/
 } FOR_COM;
+FOR_COM *new_for(Token *name, Token *map_list, COMMAND *action);
 
 /*
   for (( expr1 ; expr2 ; expr3 )) ; do list ; done
@@ -122,6 +123,7 @@ typedef struct arith_for_com {
   COMMAND *step;
   COMMAND *action;
 } ARITH_FOR_COM;
+ARITH_FOR_COM *new_arith_for(COMMAND *init, COMMAND *test, COMMAND *step, COMMAND *action); 
 
 /* if */
 typedef struct if_com {
@@ -131,12 +133,16 @@ typedef struct if_com {
   COMMAND *false_case; /* 假出口 */
 } IF_COM;
 
+IF_COM* new_if (COMMAND*test, COMMAND* ture_case, COMMAND* false_case);
+
 /* while */
 typedef struct while_com {
   int flags;
   COMMAND *test;
   COMMAND *action;
 } WHILE_COM;
+
+WHILE_COM* new_while(COMMAND *test, COMMAND *action);
 
 /* 计算算术表达式 ((...)) */
 /* The arithmetic evaluation command, ((...)).  Just a set of flags and
@@ -147,6 +153,8 @@ typedef struct arith_com {
   int line;
   Token *exp;
 } ARITH_COM;
+
+ARITH_COM *new_arith(Token *exp);
 
 /* 条件测试， [[ ...]]*/
 #define COND_AND 1
@@ -163,6 +171,8 @@ typedef struct cond_com {
   Token *op;
   struct cond_com *left, *right;
 } COND_COM;
+
+COND_COM *new_cond(Token *op, COND_COM *left, COND_COM *right);
 
 /* 最原子的命令 单词和重定向的集合 */
 typedef struct simple_com {
@@ -183,3 +193,5 @@ typedef struct function_def {
   COMMAND *command;
   char *source_file; /*函数定义在哪个文件（如有）*/
 } FUNCTION_DEF;
+
+

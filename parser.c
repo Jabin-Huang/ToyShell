@@ -72,7 +72,7 @@ COMMAND* _if() {
     COMMAND* s = _statement();
     before->next = s;
     before = s;
-  } while (look->tag != ELSE || look->tag != ELIF || look->tag != FI);
+  } while (look->tag != ELSE && look->tag != ELIF && look->tag != FI);
   if (look->tag == ELSE) {
     match(ELSE);
     COMMAND* s2 = _statement();
@@ -102,7 +102,7 @@ COMMAND* _elif() {
     COMMAND* s = _statement();
     before->next = s;
     before = s;
-  } while (look->tag != ELSE || look->tag != ELIF || look->tag != FI);
+  } while (look->tag != ELSE && look->tag != ELIF && look->tag != FI);
   if (look->tag == ELSE) {
     match(ELSE);
     COMMAND* s2 = _statement();
@@ -201,6 +201,7 @@ COMMAND* _builtin(COMMAND* pipefrom) {
       arg = look->lexeme;
     }
     
+    /*Ã»Ð´Íê*/
       
     if (look->tag =='<') {
       match('<');
@@ -208,16 +209,19 @@ COMMAND* _builtin(COMMAND* pipefrom) {
     }
     while (look->tag == '|') {
       match(BUILTIN);
-      
+          
     }
+
     
 
 }
 
 
-COMMAND* _arith() {}
+COMMAND* _arith() { 
+    
+}
 
-COMMAND* _bool() {}
+COMMAND* _bool() { return NULL; }
 
-COMMAND* _assign() {}
+COMMAND* _assign() { return NULL; }
 

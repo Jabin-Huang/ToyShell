@@ -44,7 +44,6 @@
 typedef struct token {
   char *lexeme;
   unsigned int tag;
-  // struct list_head list;
 } Token;
 
 /* µ•¥ ¡¥±Ì */

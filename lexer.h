@@ -6,10 +6,9 @@
 struct sh_lexer {
   int line;
   char peek;
-  char last;
+  Token* last;
   HASH_TABLE* reserve_table;
   HASH_TABLE* var_table;
-  // struct list* token_head;
 } lexer;
 
 void _readch();
@@ -24,4 +23,4 @@ Token* add_Val(char* );
 Token* scan();
 Token* newToken(char* , unsigned int );
 TOKEN_LIST* token_insert(TOKEN_LIST*, Token*);
-TOKEN_LIST* newTokenList()
+TOKEN_LIST* newTokenList();
