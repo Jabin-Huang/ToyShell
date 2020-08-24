@@ -14,6 +14,6 @@ COMMAND* _until();
 COMMAND* _condition();
 COMMAND* _for();
 COMMAND* _builtin(COMMAND* pipefrom);
-COMMAND* _arith();
-COMMAND* _bool();
+int _arith();
+int _bool();
 COMMAND* _assign();

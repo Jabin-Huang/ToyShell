@@ -4,7 +4,7 @@
 #include "exec.h"
 #include "parser.h"
 
-Token* look;
+TOKEN* look;
 
 void _move() {
     look = scan(); 
@@ -51,7 +51,6 @@ COMMAND* _statement() {
       return _builtin(NULL);
     default:
       return _assign();
-      break;
   }
 }
 
@@ -152,18 +151,11 @@ COMMAND* _until() {
   return new_until(conditon, stmt);
 }
 
-COMMAND* _condition() {
-  switch (look->tag) {
-    case DOUBLE_LEFT_BUCKET_ARITH:
-      return _arith();
-    case DOUBLE_LEFT_BUCKET_BOOL:
-      return _bool();
-    case '[':
-    case TEST:
-      return _test();
-    default:
-      return NULL;
-  }
+int _condition() {
+  if (look->tag == ARITH_EXP) {
+    return _arith();
+  } else
+    return _bool();
 }
 
 COMMAND* _for() {
@@ -188,40 +180,55 @@ COMMAND* _for() {
 }
 
 COMMAND* _builtin(COMMAND* pipefrom) { 
-    TOKEN_LIST *tl = malloc(sizeof(TOKEN_LIST) );
+    TOKEN_LIST *tl = (TOKEN_LIST*)malloc(sizeof(TOKEN_LIST) );
     tl->word = look;
     tl->next = NULL;
     match(BUILTIN);
     int len = 0;
     char* arg = NULL;
-    char* in = STDIN;
+    char* in = NULL;
     char* out = STDOUT;
 
     if (look->tag == ARGS) {
       arg = look->lexeme;
+      match(ARGS);
+    }
+    if (look->tag == FILE_PATH) {
+      in = look->lexeme;
+      match(FILE_PATH);
+    }
+    if (look->tag != '\n') {
+      in = readStr();
     }
     
-    /*没写完*/
+    
+    /*管道、重定向*/
       
-    if (look->tag =='<') {
+  /*  if (look->tag =='<') {
       match('<');
       in = look->lexeme;
+      ...
     }
     while (look->tag == '|') {
       match(BUILTIN);
-          
-    }
-
-    
-
+          ...
+    }*/
+    return new_simple_command();
 }
 
 
-COMMAND* _arith() { 
-    
+int _arith() {
+  char* exp = look->lexeme;
+    match(ARITH_EXP);
+  return arith_cal(exp);
 }
 
-COMMAND* _bool() { return NULL; }
+int _bool() { 
+        
+    return NULL; 
+}
 
-COMMAND* _assign() { return NULL; }
+COMMAND* _assign() {
+    return NULL; 
+}
 

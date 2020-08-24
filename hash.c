@@ -1,7 +1,6 @@
-#include "hash.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include "hash.h"
 
 /*
     buckets:指定的桶数

@@ -30,7 +30,7 @@
 #define NUM 285
 #define BUILTIN 286
 #define STRING 287
-#define DOLLAR_VAR 288
+#define HAS_DOLLAR 288
 #define DOUBLE_LEFT_BUCKET_ARITH 289
 #define DOUBLE_RIGHT_BUCKET_ARITH 290
 #define DOUBLE_LEFT_BUCKET_BOOL 291
@@ -40,15 +40,17 @@
 #define TEST 295
 #define ARGS 296
 #define FILE_PATH 297
+#define ARITH_EXP 298
+#define BOOL_EXP 299
 
 typedef struct token {
   char *lexeme;
   unsigned int tag;
-} Token;
+} TOKEN;
 
 /* µ•¥ ¡¥±Ì */
 typedef struct token_list {
   struct token_list *next;
-  Token *word;
+  TOKEN *word;
 } TOKEN_LIST;
 

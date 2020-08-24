@@ -1,43 +1,48 @@
+#include "lexer.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lexer.h"
 
 /* Reserved words */
-Token word_token_alist[] = {
+TOKEN word_token_alist[] = {
     {"if", IF},       {"then", THEN},         {"else", ELSE},   {"elif", ELIF},
     {"fi", FI},       {"case", CASE},         {"esac", ESAC},   {"for", FOR},
     {"while", WHILE}, {"while", WHILE},       {"until", UNTIL}, {"do", DO},
     {"done", DONE},   {"function", FUNCTION}, {"echo", BUILTIN}};
 
-void _readch() {
-  lexer.peek = getchar();
-}
+void _readch() { lexer.peek = getchar(); }
 
 int readch(char c) {
-  _readch(); 
+  _readch();
   if (lexer.peek != c) return 0;
   lexer.peek = ' ';
   return 1;
 }
 
-Token* newToken(char* str, unsigned int tag) {
-  Token* tok = (Token*)malloc(sizeof(Token));
-  tok->lexeme = str;
-  tok->tag = tag;
-  lexer.last = tok;
-  return tok;
+TOKEN* newToken(char* str, unsigned int tag) {
+  TOKEN* tok = (TOKEN*)malloc(sizeof(TOKEN));
+  if (tok != NULL) {
+    tok->lexeme = str;
+    tok->tag = tag;
+    lexer.last = tok;
+    return tok;
+  }
+  return NULL;
 }
 
 TOKEN_LIST* newTokenList() {
   TOKEN_LIST* list = (TOKEN_LIST*)malloc(sizeof(TOKEN_LIST));
-  list->next = NULL;
-  list->word = NULL;
-  return list;
+  if (list != NULL) {
+    list->next = NULL;
+    list->word = NULL;
+    return list;
+  }
+  return NULL;
 }
 
-TOKEN_LIST* token_insert(TOKEN_LIST* list, Token* token) {
+TOKEN_LIST* token_insert(TOKEN_LIST* list, TOKEN* token) {
   list->next = newTokenList();
   list->next->word = token;
   list->next->next = NULL;
@@ -85,22 +90,22 @@ void lex_init() {
   lexer.last = ' ';
   lexer.reserve_table = hash_create(0);
   lexer.var_table = hash_create(0);
-  int reserve_len = sizeof(word_token_alist) / sizeof(Token);
+  int reserve_len = sizeof(word_token_alist) / sizeof(TOKEN);
 
   for (int i = 0; i < reserve_len; ++i) {
-    Token* t = &word_token_alist[i];
+    TOKEN* t = &word_token_alist[i];
     BUCKET_CONTENTS* item = hash_insert(t->lexeme, lexer.reserve_table);
     item->data = t;
     printf("key %s, khash %u\n", item->key, item->khash);
   }
 }
 
-Token* add_Val(char* name) {
+TOKEN* add_Val(char* name) {
   BUCKET_CONTENTS* item = hash_insert(name, lexer.var_table);
   return item->data = newToken(name, VAR);
 }
 
-Token* scan() {
+TOKEN* scan() {
   /* 忽略注释, 空格 */
   for (;; _readch()) {
     if (lexer.peek == '#') {
@@ -225,6 +230,7 @@ Token* scan() {
       } while (lexer.peek != '}');
       str[len++] = '}';
       str[len] = '\0';
+      lexer.peek = ' ';
     } else {
       do {
         str[len++] = lexer.peek;
@@ -232,11 +238,11 @@ Token* scan() {
       } while (isLetter(lexer.peek) || isNum(lexer.peek) || lexer.peek == '_');
       str[len] = '\0';
     }
-    return newToken(str, DOLLAR_VAR);
+    return newToken(str, HAS_DOLLAR);
   }
 
   /*字符串*/
-  if (lexer.last == '=' || lexer.peek == '"' || lexer.peek == '\'') {
+  if ((lexer.last && lexer.last->tag == '=') || lexer.peek == '"' || lexer.peek == '\'') {
     char* str;
     if (lexer.peek == '"' || lexer.peek == '\'') {
       char t = lexer.peek;
@@ -255,40 +261,62 @@ Token* scan() {
     return newToken(str, STRING);
   }
 
-  /*数学表达式计算*/
-  if (lexer.peek == '(' || lexer.peek == ')') {
-    char t = lexer.peek;
+  /*算术表达式 ((...)) */
+  if (lexer.peek == '(') {
     _readch();
     if (lexer.peek == '(') {
-      return newToken("((", DOUBLE_LEFT_BUCKET_ARITH);
-    } else if (lexer.peek == ')') {
-      return newToken("))", DOUBLE_RIGHT_BUCKET_ARITH);
+      _readch();
+      char* str = newStr(0);
+      int len = 0;
+      int cnt = 0; //通过括号匹配，使表达式中的 "))"不被误解析为结束分界符
+      while(!(cnt == -1 && lexer.peek == ')' && lexer.last->tag == ')')) {
+        if (lexer.peek == ' ') continue;
+        str[len++] = lexer.peek;
+        if (lexer.peek == '(') cnt++;
+        if (lexer.peek == ')') cnt--;
+        _readch();
+      }
+      //倒数第二个')'不应出现在表达式中
+      str[--len] = '\0';
+      lexer.peek = ' ';
+      return newToken(str, ARITH_EXP);
     } else {
-      return newToken(newStr(t), t);
+      return newToken("(", '(');
     }
   }
 
-  /*字符串，文件测试 */
-  if (lexer.peek == '[' || lexer.peek == ']') {
-    char t = lexer.peek;
+  /*条件测试 [[ ... ]]*/
+  if (lexer.peek == '[') {
     _readch();
     if (lexer.peek == '[') {
-      return newToken("[[", DOUBLE_LEFT_BUCKET_BOOL);
-    } else if (lexer.peek == ']') {
-      return newToken("]]", DOUBLE_RIGHT_BUCKET_BOOL);
+      _readch();
+      char* str = newStr(0);
+      int len = 0;
+      int cnt = 0;  //通过括号匹配，使表达式中的 "]]"不被误解析为结束分界符
+      while (!(cnt == -1 && lexer.peek == ']' && lexer.last->tag == ']')) {
+        if (lexer.peek == ' ') continue;
+        str[len++] = lexer.peek;
+        if (lexer.peek == '[') cnt++;
+        if (lexer.peek == ']') cnt--;
+        _readch();
+      }
+      //倒数第二个']'不应出现在表达式中
+      str[--len] = '\0';
+      lexer.peek = ' ';
+      return newToken(str, BOOL_EXP);
     } else {
-      return newToken(newStr(t), t);
+      return newToken("[", '[');
     }
   }
 
-  /*文件路径, 规定反斜杠开头*/
-  if (lexer.peek == '\\') {
+  /*文件路径, 约定只有相对路径*/
+  if ((lexer.last && lexer.last->tag == '.') && lexer.peek == '\\') {
     char* str = readStr();
     return newToken(str, FILE_PATH);
   }
 
   /*其他单字符*/
-  Token* t = newToken(newStr(lexer.peek), lexer.peek);
+  TOKEN* t = newToken(newStr(lexer.peek), lexer.peek);
   lexer.peek = ' ';
 
   return t;

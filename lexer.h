@@ -6,7 +6,7 @@
 struct sh_lexer {
   int line;
   char peek;
-  Token* last;
+  TOKEN* last;
   HASH_TABLE* reserve_table;
   HASH_TABLE* var_table;
 } lexer;
@@ -19,8 +19,8 @@ int isNum(char );
 char* newStr(char );
 char* readStr();
 void lex_init();
-Token* add_Val(char* );
-Token* scan();
-Token* newToken(char* , unsigned int );
-TOKEN_LIST* token_insert(TOKEN_LIST*, Token*);
+TOKEN* add_Val(char* );
+TOKEN* scan();
+TOKEN* newToken(char* , unsigned int );
+TOKEN_LIST* token_insert(TOKEN_LIST*, TOKEN*);
 TOKEN_LIST* newTokenList();

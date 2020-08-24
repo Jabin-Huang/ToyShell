@@ -145,14 +145,17 @@
     <ClCompile Include="lexer.c" />
     <ClCompile Include="shell.c" />
     <ClCompile Include="parser.c" />
+    <ClCompile Include="stack.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
+    <ClInclude Include="eval.h" />
     <ClInclude Include="exec.h" />
     <ClInclude Include="general.h" />
     <ClInclude Include="hash.h" />
     <ClInclude Include="lexer.h" />
     <ClInclude Include="parser.h" />
+    <ClInclude Include="stack.h" />
     <ClInclude Include="variable.h" />
     <ClInclude Include="token.h" />
   </ItemGroup>

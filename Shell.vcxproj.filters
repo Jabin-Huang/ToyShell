@@ -36,6 +36,9 @@
     <ClCompile Include="exec.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="stack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h">
@@ -60,6 +63,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="exec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="eval.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
