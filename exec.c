@@ -7,21 +7,28 @@
 #include "eval.h"
 #include "variable.h"
 #include "general.h"
+char* CURDIR = "F:\\VS data\\default save\\Repos\\Project1\\Project1";
 
 void exec_command(COMMAND* cmd) {
   switch (cmd->type) {
     case cm_assign:
       exec_assign(cmd);
+      break;
     case cm_if:
       exec_if(cmd);
+      break;
     case cm_while:
       exec_while(cmd);
+      break;
     case cm_until:
       exec_until(cmd);
+      break;
     case cm_for:
       exec_until(cmd);
+      break;
     case cm_simple:
       exec_simple(cmd);
+      break;
     default:
       exit(-1);
   }
@@ -88,13 +95,12 @@ void exec_for(COMMAND* cmd) {
 
 void exec_simple(COMMAND* cmd) { 
     SIMPLE_COM* simple_com = cmd->value.Simple;
-	printf("simple_com->name:%s\n", simple_com->name);
-  if (strcmp(simple_com->name, "echo")) {
-      printf("%s\n", (simple_com->in)[0]);
-  }
-  else if (strcmp(simple_com->name, "mkdir"))
+    if (strcmp(simple_com->name, "echo") == 0) {
+       printf("%s\n", (simple_com->in)[0]);
+    }
+  else if (strcmp(simple_com->name, "mkdir") == 0)
   {
-	  if (strcmp((simple_com->in)[0], "-f"))
+	  if (strcmp((simple_com->in)[0], "-f") == 0)
 	  {
 		  char *target = (simple_com->in)[1];
 		  createFile(target);
@@ -104,16 +110,16 @@ void exec_simple(COMMAND* cmd) {
 		  createDirectory(target);
 	  }
   }
-  else if (strcmp(simple_com->name, "pwd"))
+  else if (strcmp(simple_com->name, "pwd") == 0)
   {
 	  getCurDirectory();
   }
-  else if (strcmp(simple_com->name, "read"))
+  else if (strcmp(simple_com->name, "read") == 0)
   {
 	  char *target = (simple_com->in)[0];
 	  readFile(target);
   }
-  else if (strcmp(simple_com->name, "rm"))
+  else if (strcmp(simple_com->name, "rm") == 0)
   {
 	  if (strcmp((simple_com->in)[0], "-f"))
 	  {
@@ -124,7 +130,7 @@ void exec_simple(COMMAND* cmd) {
 		  printf("该指令尚未开发");
 	  }
   }
-  else if (strcmp(simple_com->name, "find"))
+  else if (strcmp(simple_com->name, "find") == 0)
   {
 	  if (strcmp((simple_com->in)[0], "-r"))
 	  {
@@ -145,18 +151,18 @@ void exec_simple(COMMAND* cmd) {
 		  printf("其他指令尚未开发");
 	  }
   }
-  else if (strcmp(simple_com->name, "ls"))
+  else if (strcmp(simple_com->name, "ls") == 0)
   {
 	  curdirlist();
   }
-  else if (strcmp(simple_com->name, "rmdir"))
+  else if (strcmp(simple_com->name, "rmdir") == 0)
   {
 	  char *target = (simple_com->in)[0];
 	  removeDirectory(target);
   }
-  else if (strcmp(simple_com->name, "cp"))
+  else if (strcmp(simple_com->name, "cp") == 0)
   {
-	  if()
+	   
   }
 }
 

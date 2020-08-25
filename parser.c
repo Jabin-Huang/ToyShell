@@ -6,6 +6,7 @@
 #include "lexer.h"
 #include "variable.h"
 #include "parser.h"
+
 TOKEN* look;
 
 void _move() {
@@ -66,20 +67,20 @@ COMMAND* _if() {
   match(THEN);
   COMMAND* s1 = _statement();
   COMMAND* before = s1;
-  do {
+  while (look->tag != ELSE && look->tag != ELIF && look->tag != FI) {
     COMMAND* s = _statement();
     before->next = s;
     before = s;
-  } while (look->tag != ELSE && look->tag != ELIF && look->tag != FI);
+  }
   if (look->tag == ELSE) {
     match(ELSE);
     COMMAND* s2 = _statement();
     before = s2;
-    do {
+    while (look->tag != FI) {
       COMMAND* s = _statement();
       before->next = s;
       before = s;
-    } while (look->tag != FI);
+    }  
     match(FI);
     return new_if_com(condition, s1, s2);
   } else if (look->tag == ELIF) {
@@ -96,20 +97,20 @@ COMMAND* _elif() {
   match(THEN);
   COMMAND* s1 = _statement();
   COMMAND* before = s1;
-  do {
+  while (look->tag != ELSE && look->tag != ELIF && look->tag != FI) {
     COMMAND* s = _statement();
     before->next = s;
     before = s;
-  } while (look->tag != ELSE && look->tag != ELIF && look->tag != FI);
+  } 
   if (look->tag == ELSE) {
     match(ELSE);
     COMMAND* s2 = _statement();
     before = s2;
-    do {
+    while (look->tag != FI){
       COMMAND* s = _statement();
       before->next = s;
       before = s;
-    } while (look->tag != FI);
+    }  
     match(FI);
     return new_if_com(condition, s1, s2);
   } else if (look->tag == ELIF) {
@@ -165,7 +166,7 @@ COMMAND* _for() {
   var = newStr(0);
   strcpy(var, look->lexeme);
   match(VAR);
-  match(IN);
+  match(_IN);
   int len_list = 0;
   while (look->tag != DO) {
     if (look->tag == STRING) {
@@ -234,7 +235,7 @@ COMMAND* _assign() {
     match(STRING);
   } else {
     v.numVal = cal(_exp());
-    t = INT;
+    t = _INT;
   }
   return new_assign_com(name, v, t);
 }

@@ -16,7 +16,7 @@
 #define FUNCTION 271
 #define COND_START 272
 #define COND_END 273
-#define IN 274
+#define _IN 274
 #define AND_AND 275
 #define OR_OR 276
 #define GREATER_GREATER 277

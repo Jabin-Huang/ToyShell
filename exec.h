@@ -40,7 +40,7 @@ char* infoTransform(char *);
 #define SOURCE "F:\\OSClassDesign\\testDirectory\\test1\\scscxt"
 #define TARGET "F:\\OSClassDesign\\testDirectory\\test1\\2.txt\\th.txt"
 
-char * CURDIR = "F:\\VS data\\default save\\Repos\\Project1\\Project1";
+
 
 
 void exec_command(COMMAND* cmd);

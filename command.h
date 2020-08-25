@@ -91,20 +91,20 @@ typedef struct arith_for_com {
 
 /* if */
 typedef struct if_com {
-  int test;            /*测试条件*/
+  char* test;            /*测试条件*/
   COMMAND *true_case;  /* 真出口 */
   COMMAND *false_case; /* 假出口 */
 } IF_COM;
 
 /* while */
 typedef struct while_com {
-  int test;
+  char *test;
   COMMAND *action;
 } WHILE_COM;
 
 /* while */
 typedef struct until_com {
-  int test;
+  char *test;
   COMMAND *action;
 } UNTIL_COM;
 

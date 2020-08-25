@@ -288,20 +288,18 @@ char* var_expand(char* exp) {
         } while (isLetter(*exp) || isNum(*exp) ||
                  *exp == '_');
         temp[len] = '\0';
-        exp++;
+       
       }
       Var* v = val_get(temp);
       char *ele = NULL;
 	
-      if (v->type == INT) {
+      if (v->type == _INT) {
         ele = num2String(v->value.numVal);
       } else {
         ele = v->value.str;
       } 
       str = strcat(str, ele);
     } else {
-		printf("test:");
-		
       int len = strlen(str);
       str[len++] = *exp;
       str[len] = '\0';

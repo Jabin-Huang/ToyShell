@@ -6,7 +6,7 @@ typedef union val {
   int numVal;
   char* str;
 } VAL;
-typedef enum {STR, INT} VAR_TYPE;
+typedef enum {STR, _INT} VAR_TYPE;
 /*
 	±‰¡ø
 */

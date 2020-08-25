@@ -12,7 +12,7 @@ TOKEN word_token_alist[] = {{"if", IF},
                             {"elif", ELIF},
                             {"fi", FI},
                             {"for", FOR},
-                            {"in", IN},
+                            {"in", _IN},
                             {"while", WHILE},
                             {"while", WHILE},
                             {"until", UNTIL},
@@ -120,6 +120,7 @@ TOKEN* add_Val(char* name) {
 }
 
 TOKEN* scan() {
+  if (lexer.peek == EOF) return NULL;
   /* 忽略注释, 空格 */
   for (;; _readch()) {
     if (lexer.peek == '#') {
@@ -137,13 +138,13 @@ TOKEN* scan() {
 
   //命令参数
   if (lexer.last && (lexer.last->tag == ARG || lexer.last->tag == BUILTIN ||
-      lexer.last->tag == OPNION)) {
+      lexer.last->tag == OPNION) && lexer.last_peek != '\n') {
     char* s = readStr();
     return newToken(s, ARG);
   } 
 
   //for 映射列表的元素
-  if (lexer.last == IN) {
+  if (lexer.last == _IN) {
     char* s = readStr();
     return newToken(s, STRING);
   }
