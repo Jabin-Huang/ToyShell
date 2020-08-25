@@ -1,25 +1,19 @@
 
+#include "parser.h"
+
 #include <stdio.h>
 #include <string.h>
+
 #include "command.h"
+#include "eval.h"
 #include "exec.h"
 #include "lexer.h"
-#include "parser.h"
-#include "eval.h"
 #include "variable.h"
 TOKEN* look;
 
 void _move() {
-    look = scan(); 
-    printf("%s\n", look->lexeme);
-}
-
-void _move_arg() {
-  char* s = readStr();
-  if (s != '\0')
-    look = newToken(s, ARG);
-  else
-    _move();
+  look = scan();
+  printf("look: %s\n", look->lexeme);
 }
 
 void parser_init() {
@@ -169,7 +163,7 @@ char* _exp() {
 
 COMMAND* _for() {
   char* var;
-  char** list = (char**)malloc(50*sizeof(char*));
+  char** list = (char**)malloc(50 * sizeof(char*));
   match(FOR);
   var = newStr(0);
   strcpy(var, look->lexeme);
@@ -177,10 +171,10 @@ COMMAND* _for() {
   match(IN);
   int len_list = 0;
   while (look->tag != DO) {
-    _move_arg();
     if (look->tag == STRING) {
       list[len_list++] = newStr(0);
       strcpy(list[len_list], look->lexeme);
+      match(STRING);
     }
   }
   match(DO);
@@ -195,25 +189,28 @@ COMMAND* _for() {
   return new_for_com(var, list, len_list, stmt);
 }
 
-COMMAND* _builtin(COMMAND* pipefrom) { 
-    char* name = look->lexeme;
-    match(BUILTIN);
-    char* opnion = NULL;
-    char** in = (char**)malloc(10*sizeof(char*));
-    if (look->tag == OPNION) {
-      opnion = look->lexeme;
+COMMAND* _builtin(COMMAND* pipefrom) {
+  char* name = look->lexeme;
+  match(BUILTIN);
+  char* opnion = NULL;
+  char** in = (char**)malloc(10 * sizeof(char*));
+  if (look->tag == OPNION) {
+    opnion = look->lexeme;
+    match(OPNION);
+  }
+  int i = 0;
+  if (look->tag == ARG) {
+    while (look->tag == ARG) {
+      int len = strlen(look->lexeme) + 1;
+      // in[i++] = savestring(look->lexeme);
+      char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
+      in[i++] = strcpy_s(s, 1 + strlen(look->lexeme), (look->lexeme));
+      match(ARG);
     }
-    _move_arg();
-    int i = 0;
-    if (look->tag == ARG) {
-      while (look->tag == ARG) {
-        in[i++] = savestring(look->lexeme);
-        _move_arg();
-      }
-    }
-    
-    /*管道、重定向*/
-      
+  }
+
+  /*管道、重定向*/
+
   /*  if (look->tag =='<') {
       match('<');
       in = look->lexeme;
@@ -223,10 +220,8 @@ COMMAND* _builtin(COMMAND* pipefrom) {
       match(BUILTIN);
           ...
     }*/
-    return new_simple_com(name, opnion, in);
+  return new_simple_com(name, opnion, in);
 }
-
-
 
 COMMAND* _assign() {
   char* name = look->lexeme;
@@ -246,4 +241,3 @@ COMMAND* _assign() {
   }
   return new_assign_com(name, v, t);
 }
-

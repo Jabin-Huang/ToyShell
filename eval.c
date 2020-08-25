@@ -5,6 +5,7 @@
 #include "stack.h"
 #include "eval.h"
 #include "variable.h"
+#include "lexer.h"
 
 
 int isNum(char);  //在lexer.c中已定义
@@ -84,8 +85,8 @@ int cal(char* exp) {
   exp = var_expand(exp);
   STACK opnd = {0, NULL};  //运算数;
   STACK optr = {0, NULL};  //运算符;
-  char eoe = '\0';
-  stack_push(&optr, &eoe); //哨兵
+  char *eoe = savestring("");
+  stack_push(&optr, eoe); //哨兵
   while (optr.size != 0) {
     if (isNum(*exp)) {
       readNumber(&exp, &opnd);   

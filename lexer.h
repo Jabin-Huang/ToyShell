@@ -6,6 +6,7 @@
 struct sh_lexer {
   int line;
   char peek;
+  char last_peek;
   TOKEN* last;
   HASH_TABLE* reserve_table;
   HASH_TABLE* var_table;

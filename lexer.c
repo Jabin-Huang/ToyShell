@@ -21,7 +21,10 @@ TOKEN word_token_alist[] = {{"if", IF},
                             {"function", FUNCTION},
                             {"echo", BUILTIN}};
 
-void _readch() { lexer.peek = getchar(); }
+void _readch() { 
+    lexer.last_peek = lexer.peek;
+    lexer.peek = getchar(); 
+}
 
 int readch(char c) {
   _readch();
@@ -97,6 +100,7 @@ char* readStr() {
 void lex_init() {
   lexer.line = 0;
   lexer.peek = ' ';
+  lexer.last_peek = '\0'; 
   lexer.last = NULL;
   lexer.reserve_table = hash_create(0);
   lexer.var_table = hash_create(0);
@@ -129,6 +133,19 @@ TOKEN* scan() {
       continue;
     else
       break;
+  }
+
+  //命令参数
+  if (lexer.last && (lexer.last->tag == ARG || lexer.last->tag == BUILTIN ||
+      lexer.last->tag == OPNION)) {
+    char* s = readStr();
+    return newToken(s, ARG);
+  } 
+
+  //for 映射列表的元素
+  if (lexer.last == IN) {
+    char* s = readStr();
+    return newToken(s, STRING);
   }
 
   /*运算符*/
@@ -188,7 +205,7 @@ TOKEN* scan() {
           return newToken("-ge", GE);
         else if (strcmp(str, "-le") == 0)
           return newToken("-le", LE);
-        else if (lexer.last->tag == BUILTIN)
+        else if (lexer.last && lexer.last->tag == BUILTIN)
           return newToken(str, OPNION);
       } else
         return newToken("-", '-');
@@ -208,7 +225,8 @@ TOKEN* scan() {
     str[len] = '\0';
     return newToken(str, NUM);
   }
-
+  
+  
   /*保留词, 变量定义*/
   if (isLetter(lexer.peek) || lexer.peek == '_') {
     char* str = newStr(0);
@@ -224,6 +242,7 @@ TOKEN* scan() {
     str[len] = '\0';
     BUCKET_CONTENTS* item;
     if (item = hash_search(str, lexer.reserve_table)) {
+      lexer.last = (TOKEN*)item->data;
       return item->data;
     } else
       exit(-1);
@@ -282,8 +301,11 @@ TOKEN* scan() {
       char* str = newStr(0);
       int len = 0;
       int cnt = 0;  //通过括号匹配，使表达式中的 "))"不被误解析为结束分界符
-      while (!(cnt == -1 && lexer.peek == ')' && lexer.last->tag == ')')) {
-        if (lexer.peek == ' ') continue;
+      while (!(cnt == -1 && lexer.peek == ')' && lexer.last_peek == ')')) {
+        if (lexer.peek == ' ') {
+          _readch();
+          continue;
+        }
         str[len++] = lexer.peek;
         if (lexer.peek == '(') cnt++;
         if (lexer.peek == ')') cnt--;
@@ -306,7 +328,7 @@ TOKEN* scan() {
       char* str = newStr(0);
       int len = 0;
       int cnt = 0;  //通过括号匹配，使表达式中的 "]]"不被误解析为结束分界符
-      while (!(cnt == -1 && lexer.peek == ']' && lexer.last->tag == ']')) {
+      while (!(cnt == -1 && lexer.peek == ']' && lexer.last_peek == ']')) {
         if (lexer.peek == ' ') continue;
         str[len++] = lexer.peek;
         if (lexer.peek == '[') cnt++;
@@ -323,7 +345,7 @@ TOKEN* scan() {
   }
 
   /*文件路径, 约定只有相对路径*/
-  if ((lexer.last && lexer.last->tag == '.') && lexer.peek == '\\') {
+  if ((lexer.last && lexer.last_peek == '.') && lexer.peek == '\\') {
     char* str = readStr();
     return newToken(str, FILE_PATH);
   }

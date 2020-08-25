@@ -3,3 +3,7 @@ typedef char* sh_string_func_t(char*);  //定义一个函数类型，该函数用于复制字符串
 typedef void sh_free_func_t(void*);  //定义一个函数类型，该函数用于释放内存
 
 #define DEFAULT_STRLEN 80
+
+#if !defined(savestring)
+#define savestring(x) (char*)strcpy(malloc(1 + strlen(x)), (x))
+#endif

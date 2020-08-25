@@ -19,7 +19,10 @@ int main(int agrc, char **argv) {
   //sh_loop();
   //test_parser();
   parser_init();
-  _statement();
+  while (1) {
+    _statement(); 
+  }
+  
   return 0;
 }
 

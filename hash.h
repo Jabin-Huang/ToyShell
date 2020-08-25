@@ -17,9 +17,7 @@ typedef struct hash_table {
 
 typedef int hash_wfunc(BUCKET_CONTENTS*);
 
-#if !defined(savestring)
-#define savestring(x) (char*)strcpy(malloc(1 + strlen(x)), (x))
-#endif
+
 
 HASH_TABLE* hash_create(int);
 HASH_TABLE* hash_copy(HASH_TABLE*, sh_string_func_t*);
