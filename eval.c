@@ -204,7 +204,6 @@ int* calcu(int t1, char *op, int t2) {
           exit(-1);
       }
     }
-    printf("%d\n", *res);
     return res;
 }
 

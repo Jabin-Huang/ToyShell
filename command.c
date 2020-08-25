@@ -74,7 +74,6 @@ COMMAND* new_simple_com(TOKEN* name, char* args, char** in) {
   simple_com->name = name;
   simple_com->args = args;
   simple_com->in = in;
-  printf("in0: %s", in[0]);
   COMMAND* simple = (COMMAND*)(malloc(sizeof(COMMAND)));
   simple->line = lexer.line;
   simple->type = cm_simple;

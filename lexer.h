@@ -1,5 +1,5 @@
 #pragma once
-
+#include<stdio.h>
 #include"hash.h"
 #include"token.h"
 
@@ -10,6 +10,7 @@ struct sh_lexer {
   TOKEN* last;
   HASH_TABLE* reserve_table;
   HASH_TABLE* var_table;
+  FILE* source;
 } lexer;
 
 void _readch();

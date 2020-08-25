@@ -5,7 +5,7 @@
 #include "general.h"
 #include "lexer.h"
 
-/* Reserved words */
+
 TOKEN word_token_alist[] = {{"if", IF},
                             {"then", THEN},
                             {"else", ELSE},
@@ -23,7 +23,7 @@ TOKEN word_token_alist[] = {{"if", IF},
 
 void _readch() { 
     lexer.last_peek = lexer.peek;
-    lexer.peek = getchar(); 
+    lexer.peek = fgetc(lexer.source); 
 }
 
 int readch(char c) {
@@ -97,20 +97,20 @@ char* readStr() {
   return str;
 }
 
-void lex_init() {
+void lex_init(FILE* fp) {
   lexer.line = 0;
   lexer.peek = ' ';
   lexer.last_peek = '\0'; 
   lexer.last = NULL;
   lexer.reserve_table = hash_create(0);
   lexer.var_table = hash_create(0);
+  lexer.source = fp;
   int reserve_len = sizeof(word_token_alist) / sizeof(TOKEN);
 
   for (int i = 0; i < reserve_len; ++i) {
     TOKEN* t = &word_token_alist[i];
     BUCKET_CONTENTS* item = hash_insert(t->lexeme, lexer.reserve_table);
     item->data = t;
-    printf("key %s, khash %u\n", item->key, item->khash);
   }
 }
 

@@ -11,11 +11,10 @@ TOKEN* look;
 
 void _move() {
   look = scan();
-  printf("look: %s\n", look->lexeme);
 }
 
-void parser_init() {
-  lex_init();
+void parser_init(FILE* fp) {
+  lex_init(fp);
   create_symbolTable();
   _move();
 }
@@ -29,13 +28,6 @@ void match(int tag) {
   }
 }
 
-void test_parser() {
-  parser_init();
-  while (look->lexeme != EOF) {
-    printf("(%s, %d)\n", look->lexeme, look->tag);
-    _move();
-  }
-}
 
 COMMAND* _statement() {
   switch (look->tag) {
@@ -54,12 +46,6 @@ COMMAND* _statement() {
   }
 }
 
-// COMMAND* statements(int end) {
-//  if (look->tag == end) {
-//    return NULL;
-//  } else
-//    return new_stmts(_statement(), statements());
-//}
 
 COMMAND* _if() {
   match(IF);
@@ -192,6 +178,7 @@ COMMAND* _builtin(COMMAND* pipefrom) {
   match(BUILTIN);
   char* opnion = NULL;
   char** in = (char**)malloc(10 * sizeof(char*));
+  if (in == NULL) exit(-1);
   if (look->tag == OPNION) {
     opnion = look->lexeme;
     match(OPNION);
@@ -200,9 +187,9 @@ COMMAND* _builtin(COMMAND* pipefrom) {
   if (look->tag == ARG) {
     while (look->tag == ARG) {
       int len = strlen(look->lexeme) + 1;
-      // in[i++] = savestring(look->lexeme);
       char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
-      in[i++] = strcpy_s(s, 1 + strlen(look->lexeme), (look->lexeme));
+      if (s == NULL) exit(-1);
+      in[i] = strcpy(s, (look->lexeme));
       match(ARG);
     }
   }
