@@ -1,14 +1,11 @@
-
-#include "parser.h"
-
 #include <stdio.h>
 #include <string.h>
-
 #include "command.h"
 #include "eval.h"
 #include "exec.h"
 #include "lexer.h"
 #include "variable.h"
+#include "parser.h"
 TOKEN* look;
 
 void _move() {
