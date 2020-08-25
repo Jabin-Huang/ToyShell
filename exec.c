@@ -8,6 +8,8 @@
 #include "variable.h"
 #include "general.h"
 
+char* CURDIR = "F:\\VS data\\default save\\Repos\\Project1\\Project1";
+
 void exec_command(COMMAND* cmd) {
   switch (cmd->type) {
     case cm_assign:
@@ -156,7 +158,7 @@ void exec_simple(COMMAND* cmd) {
   }
   else if (strcmp(simple_com->name, "cp"))
   {
-	  if()
+	  
   }
 }
 

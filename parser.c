@@ -1,4 +1,4 @@
-
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "command.h"
@@ -174,7 +174,7 @@ COMMAND* _for() {
   var = newStr(0);
   strcpy(var, look->lexeme);
   match(VAR);
-  match(IN);
+  match(_IN);
   int len_list = 0;
   while (look->tag != DO) {
     _move_arg();
@@ -242,7 +242,7 @@ COMMAND* _assign() {
     match(STRING);
   } else {
     v.numVal = cal(_exp());
-    t = INT;
+    t = _INT;
   }
   return new_assign_com(name, v, t);
 }

@@ -5,7 +5,7 @@
 #include "stack.h"
 #include "eval.h"
 #include "variable.h"
-
+#include "lexer.h"
 
 int isNum(char);  //在lexer.c中已定义
 int isLetter(char);
@@ -84,8 +84,8 @@ int cal(char* exp) {
   exp = var_expand(exp);
   STACK opnd = {0, NULL};  //运算数;
   STACK optr = {0, NULL};  //运算符;
-  char eoe = '\0';
-  stack_push(&optr, &eoe); //哨兵
+  char *eoe = savestring("");
+  stack_push(&optr, eoe); //哨兵
   while (optr.size != 0) {
     if (isNum(*exp)) {
       readNumber(&exp, &opnd);   
@@ -292,7 +292,7 @@ char* var_expand(char* exp) {
       Var* v = val_get(temp);
       char *ele = NULL;
 	
-      if (v->type == INT) {
+      if (v->type == _INT) {
         ele = num2String(v->value.numVal);
       } else {
         ele = v->value.str;
