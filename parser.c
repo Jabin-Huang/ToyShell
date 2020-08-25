@@ -1,22 +1,30 @@
 
 #include <stdio.h>
+#include <string.h>
 #include "command.h"
 #include "exec.h"
+#include "lexer.h"
 #include "parser.h"
-
+#include "eval.h"
+#include "variable.h"
 TOKEN* look;
 
 void _move() {
     look = scan(); 
+    printf("%s\n", look->lexeme);
 }
 
-void _move_str() {
+void _move_arg() {
   char* s = readStr();
-  look = newToken(s, STRING);
+  if (s != '\0')
+    look = newToken(s, ARG);
+  else
+    _move();
 }
 
 void parser_init() {
   lex_init();
+  create_symbolTable();
   _move();
 }
 
@@ -63,7 +71,7 @@ COMMAND* _statement() {
 
 COMMAND* _if() {
   match(IF);
-  COMMAND* condition = _condition();
+  char* condition = _exp();
   match(THEN);
   COMMAND* s1 = _statement();
   COMMAND* before = s1;
@@ -82,18 +90,18 @@ COMMAND* _if() {
       before = s;
     } while (look->tag != FI);
     match(FI);
-    return new_if(condition, s1, s2);
+    return new_if_com(condition, s1, s2);
   } else if (look->tag == ELIF) {
-    return new_if(condition, s1, _elif());
+    return new_if_com(condition, s1, _elif());
   } else {
     match(FI);
-    return new_if(condition, s1, NULL);
+    return new_if_com(condition, s1, NULL);
   }
 }
 
 COMMAND* _elif() {
   match(ELIF);
-  COMMAND* condition = _condition();
+  char* condition = _exp();
   match(THEN);
   COMMAND* s1 = _statement();
   COMMAND* before = s1;
@@ -112,18 +120,18 @@ COMMAND* _elif() {
       before = s;
     } while (look->tag != FI);
     match(FI);
-    return new_if(condition, s1, s2);
+    return new_if_com(condition, s1, s2);
   } else if (look->tag == ELIF) {
-    return new_if(condition, s1, _elif());
+    return new_if_com(condition, s1, _elif());
   } else {
     match(FI);
-    return new_if(condition, s1, NULL);
+    return new_if_com(condition, s1, NULL);
   }
 }
 
 COMMAND* _while() {
   match(WHILE);
-  COMMAND* condition = _condition();
+  char* condition = _exp();
   match(DO);
   COMMAND* stmt = _statement();
   COMMAND* before = stmt;
@@ -133,12 +141,12 @@ COMMAND* _while() {
     before = s;
   }
   match(DONE);
-  return new_while(condition, stmt);
+  return new_while_com(condition, stmt);
 }
 
 COMMAND* _until() {
   match(UNTIL);
-  COMMAND* conditon = _condition();
+  char* conditon = _exp();
   match(DO);
   COMMAND* stmt = _statement();
   COMMAND* before = stmt;
@@ -148,25 +156,33 @@ COMMAND* _until() {
     before = s;
   }
   match(DONE);
-  return new_until(conditon, stmt);
+  return new_until_com(conditon, stmt);
 }
 
-int _condition() {
-  if (look->tag == ARITH_EXP) {
-    return _arith();
-  } else
-    return _bool();
+char* _exp() {
+  if (look->tag == EXP || look->tag == NUM || look->tag == STRING) {
+    char* exp = look->lexeme;
+    match(look->tag);
+    return exp;
+  }
 }
 
 COMMAND* _for() {
+  char* var;
+  char** list = (char**)malloc(50*sizeof(char*));
   match(FOR);
-  match(DOUBLE_LEFT_BUCKET_ARITH);
-  COMMAND* init = _arith();
-  match(';');
-  COMMAND* test = _arith();
-  match(';');
-  COMMAND* next = _arith();
-  match(DOUBLE_RIGHT_BUCKET_ARITH);
+  var = newStr(0);
+  strcpy(var, look->lexeme);
+  match(VAR);
+  match(IN);
+  int len_list = 0;
+  while (look->tag != DO) {
+    _move_arg();
+    if (look->tag == STRING) {
+      list[len_list++] = newStr(0);
+      strcpy(list[len_list], look->lexeme);
+    }
+  }
   match(DO);
   COMMAND* stmt = _statement();
   COMMAND* before = stmt;
@@ -176,31 +192,25 @@ COMMAND* _for() {
     before = s;
   }
   match(DONE);
-  return new_arith_for(init, test, next, stmt);
+  return new_for_com(var, list, len_list, stmt);
 }
 
 COMMAND* _builtin(COMMAND* pipefrom) { 
-    TOKEN_LIST *tl = (TOKEN_LIST*)malloc(sizeof(TOKEN_LIST) );
-    tl->word = look;
-    tl->next = NULL;
+    char* name = look->lexeme;
     match(BUILTIN);
-    int len = 0;
-    char* arg = NULL;
-    char* in = NULL;
-    char* out = STDOUT;
-
-    if (look->tag == ARGS) {
-      arg = look->lexeme;
-      match(ARGS);
+    char* opnion = NULL;
+    char** in = (char**)malloc(10*sizeof(char*));
+    if (look->tag == OPNION) {
+      opnion = look->lexeme;
     }
-    if (look->tag == FILE_PATH) {
-      in = look->lexeme;
-      match(FILE_PATH);
+    _move_arg();
+    int i = 0;
+    if (look->tag == ARG) {
+      while (look->tag == ARG) {
+        in[i++] = savestring(look->lexeme);
+        _move_arg();
+      }
     }
-    if (look->tag != '\n') {
-      in = readStr();
-    }
-    
     
     /*管道、重定向*/
       
@@ -213,22 +223,27 @@ COMMAND* _builtin(COMMAND* pipefrom) {
       match(BUILTIN);
           ...
     }*/
-    return new_simple_command();
+    return new_simple_com(name, opnion, in);
 }
 
 
-int _arith() {
-  char* exp = look->lexeme;
-    match(ARITH_EXP);
-  return arith_cal(exp);
-}
-
-int _bool() { 
-        
-    return NULL; 
-}
 
 COMMAND* _assign() {
-    return NULL; 
+  char* name = look->lexeme;
+  match(VAR);
+  match('=');
+  TOKEN* value = look;
+  VAL v;
+  VAR_TYPE t;
+  if (look->tag == STRING) {
+    v.str = newStr(0);
+    t = STR;
+    strcpy(v.str, look->lexeme);
+    match(STRING);
+  } else {
+    v.numVal = cal(_exp());
+    t = INT;
+  }
+  return new_assign_com(name, v, t);
 }
 

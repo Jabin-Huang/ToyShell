@@ -1,16 +1,25 @@
-#include "lexer.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "general.h"
+#include "lexer.h"
 
 /* Reserved words */
-TOKEN word_token_alist[] = {
-    {"if", IF},       {"then", THEN},         {"else", ELSE},   {"elif", ELIF},
-    {"fi", FI},       {"case", CASE},         {"esac", ESAC},   {"for", FOR},
-    {"while", WHILE}, {"while", WHILE},       {"until", UNTIL}, {"do", DO},
-    {"done", DONE},   {"function", FUNCTION}, {"echo", BUILTIN}};
+TOKEN word_token_alist[] = {{"if", IF},
+                            {"then", THEN},
+                            {"else", ELSE},
+                            {"elif", ELIF},
+                            {"fi", FI},
+                            {"for", FOR},
+                            {"in", IN},
+                            {"while", WHILE},
+                            {"while", WHILE},
+                            {"until", UNTIL},
+                            {"do", DO},
+                            {"done", DONE},
+                            {"function", FUNCTION},
+                            {"echo", BUILTIN}};
 
 void _readch() { lexer.peek = getchar(); }
 
@@ -64,11 +73,12 @@ char* newStr(char c) {
     str[0] = c;
     str[1] = '\0';
   } else {
-    str = (char*)malloc(256 * sizeof(char));
+    str = (char*)malloc(DEFAULT_STRLEN * sizeof(char));
     if (str == 0) {
       fprintf(stderr, "failed to new a str\n!");
       return 0;
     }
+    str[0] = '\0';
   }
   return str;
 }
@@ -76,10 +86,10 @@ char* newStr(char c) {
 char* readStr() {
   char* str = newStr(0);
   int len = 0;
-  do {
+  while (lexer.peek != ' ' && lexer.peek != '\n' && lexer.peek != '\t') {
     str[len++] = lexer.peek;
     _readch();
-  } while (lexer.peek != ' ' && lexer.peek != '\n' && lexer.peek != '\t');
+  }
   str[len] = '\0';
   return str;
 }
@@ -87,7 +97,7 @@ char* readStr() {
 void lex_init() {
   lexer.line = 0;
   lexer.peek = ' ';
-  lexer.last = ' ';
+  lexer.last = NULL;
   lexer.reserve_table = hash_create(0);
   lexer.var_table = hash_create(0);
   int reserve_len = sizeof(word_token_alist) / sizeof(TOKEN);
@@ -179,7 +189,7 @@ TOKEN* scan() {
         else if (strcmp(str, "-le") == 0)
           return newToken("-le", LE);
         else if (lexer.last->tag == BUILTIN)
-          return newToken(str, ARGS);
+          return newToken(str, OPNION);
       } else
         return newToken("-", '-');
     }
@@ -198,23 +208,25 @@ TOKEN* scan() {
     str[len] = '\0';
     return newToken(str, NUM);
   }
-  /*变量、保留词*/
-  if (lexer.last != '$' && (isLetter(lexer.peek) || lexer.peek == '_')) {
+
+  /*保留词, 变量定义*/
+  if (isLetter(lexer.peek) || lexer.peek == '_') {
     char* str = newStr(0);
     int len = 0;
     do {
       str[len++] = lexer.peek;
       _readch();
+      if (lexer.peek == '=') {
+        str[len] = '\0';
+        return newToken(str, VAR);
+      }
     } while (isLetter(lexer.peek) || isNum(lexer.peek) || lexer.peek == '_');
     str[len] = '\0';
     BUCKET_CONTENTS* item;
     if (item = hash_search(str, lexer.reserve_table)) {
       return item->data;
-    } else if (item = hash_search(str, lexer.var_table)) {
-      return item->data;
-    } else {
-      return add_Val(str);
-    }
+    } else
+      exit(-1);
   }
 
   /*变量引用*/
@@ -242,7 +254,8 @@ TOKEN* scan() {
   }
 
   /*字符串*/
-  if ((lexer.last && lexer.last->tag == '=') || lexer.peek == '"' || lexer.peek == '\'') {
+  if ((lexer.last && lexer.last->tag == '=') || lexer.peek == '"' ||
+      lexer.peek == '\'') {
     char* str;
     if (lexer.peek == '"' || lexer.peek == '\'') {
       char t = lexer.peek;
@@ -268,8 +281,8 @@ TOKEN* scan() {
       _readch();
       char* str = newStr(0);
       int len = 0;
-      int cnt = 0; //通过括号匹配，使表达式中的 "))"不被误解析为结束分界符
-      while(!(cnt == -1 && lexer.peek == ')' && lexer.last->tag == ')')) {
+      int cnt = 0;  //通过括号匹配，使表达式中的 "))"不被误解析为结束分界符
+      while (!(cnt == -1 && lexer.peek == ')' && lexer.last->tag == ')')) {
         if (lexer.peek == ' ') continue;
         str[len++] = lexer.peek;
         if (lexer.peek == '(') cnt++;
@@ -279,7 +292,7 @@ TOKEN* scan() {
       //倒数第二个')'不应出现在表达式中
       str[--len] = '\0';
       lexer.peek = ' ';
-      return newToken(str, ARITH_EXP);
+      return newToken(str, EXP);
     } else {
       return newToken("(", '(');
     }
@@ -303,7 +316,7 @@ TOKEN* scan() {
       //倒数第二个']'不应出现在表达式中
       str[--len] = '\0';
       lexer.peek = ' ';
-      return newToken(str, BOOL_EXP);
+      return newToken(str, EXP);
     } else {
       return newToken("[", '[');
     }

@@ -1,15 +1,25 @@
 #pragma once
 
- 
+ #include"hash.h"
 
+typedef union val {
+  int numVal;
+  char* str;
+} VAL;
+typedef enum {STR, INT} VAR_TYPE;
 /*
 	±‰¡ø
 */
-typedef struct var_context {
+typedef struct var {
   char* name;
-  union {
-    int val;
-    char* str;
-  }value;
+  VAR_TYPE type;
+  VAL value;
 }Var;
 
+HASH_TABLE* var_table;
+
+Var* val_get(char* name);
+
+Var* var_insert(char* name, Var* v);
+
+char* num2String(int v);

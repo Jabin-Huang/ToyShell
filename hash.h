@@ -24,8 +24,9 @@ typedef int hash_wfunc(BUCKET_CONTENTS*);
 HASH_TABLE* hash_create(int);
 HASH_TABLE* hash_copy(HASH_TABLE*, sh_string_func_t*);
 void hash_flush(HASH_TABLE*, sh_free_func_t*);
+void hash_walk(HASH_TABLE* table, hash_wfunc* func);
 void hash_dspose(HASH_TABLE*);
-void hash_walk(HASH_TABLE*);
+ 
 
 int hash_bucket(const char*, HASH_TABLE*);
 int hash_size(HASH_TABLE*);

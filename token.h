@@ -38,10 +38,10 @@
 #define BREAK 293
 #define CONTINUE 294
 #define TEST 295
-#define ARGS 296
+#define OPNION 296
 #define FILE_PATH 297
-#define ARITH_EXP 298
-#define BOOL_EXP 299
+#define EXP 298
+#define ARG 299
 
 typedef struct token {
   char *lexeme;

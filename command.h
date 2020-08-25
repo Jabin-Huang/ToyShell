@@ -1,24 +1,6 @@
 #pragma once
 #include "token.h"
-
-/*
-        重定向描述，如果重定向操作为复制文件操作符(ri_duplicating_input or
-   ri_duplicating_output)，使用DEST（文件描述符），不然使用filename（文件名）
-*/
-typedef union {
-  int dest;
-  TOKEN_LIST *filename;
-} REDIRECTEE;
-
-typedef struct redirect {
-  struct redirect *next;
-  REDIRECTEE redirector;          /* 被重定向的描述符或变量名 */
-  int rflags;                     /* private 的标志位 */
-  int flags;                      /* 文件的打开方式 */
-  enum r_instruction instruction; /* 重定向的操作类型 */
-  REDIRECTEE redirectee;          /* 文件描述符 或 文件名 */
-  // char *here_doc_eof;    /* Here Document 相关 */
-} REDIRECT;
+#include "variable.h"
 
 /* Command(命令) 的种类 */
 enum command_type {
@@ -34,19 +16,19 @@ enum command_type {
   cm_arith,
   cm_cond,
   cm_arith_for,
+  cm_assign,
 };
-
 
 /* 命令 */
 typedef struct command {
   enum command_type type;
   int line;
   struct command *next;
-  REDIRECT *redirecs;  // FOR  CASE中 的特殊重定向
   union {
     struct for_com *For;
     struct case_com *Case;
     struct while_com *While;
+    struct until_com *Until;
     struct if_com *If;
     struct connection *Connection;
     struct simple_com *Simple;
@@ -54,6 +36,7 @@ typedef struct command {
     struct arith_com *Arith;
     struct cond_com *Cond;
     struct arith_for_com *ArithFor;
+    struct new_assign_com *Assign;
   } value;
 } COMMAND;
 
@@ -85,13 +68,11 @@ typedef struct case_com {
 
 /* for name [ [ in [ word ... ] ] ; ] do list ; done */
 typedef struct for_com {
-  int line;
-  TOKEN *name;     /* 循环时用于映射相应值的变量 */
-  TOKEN *map_list; /* 待遍历的全体对象 */
+  char *var;       /* 循环时用于映射相应值的变量 */
+  char **map_list; /* 待遍历的全体对象 */
+  int len_list;
   COMMAND *action; /*循环体内的命令*/
 } FOR_COM;
-
-FOR_COM *new_for(TOKEN *name, TOKEN *map_list, COMMAND *action);
 
 /*
   for (( expr1 ; expr2 ; expr3 )) ; do list ; done
@@ -105,16 +86,15 @@ typedef struct arith_for_com {
   COMMAND *action;
 } ARITH_FOR_COM;
 
-ARITH_FOR_COM *new_arith_for(COMMAND *init, COMMAND *test, COMMAND *step, COMMAND *action); 
+// COMMAND *new_arith_for(COMMAND *init, COMMAND *test, COMMAND *step, COMMAND
+// *action);
 
 /* if */
 typedef struct if_com {
-  int test;       /*测试条件*/
+  int test;            /*测试条件*/
   COMMAND *true_case;  /* 真出口 */
   COMMAND *false_case; /* 假出口 */
 } IF_COM;
-
-IF_COM* new_if (int test, COMMAND* ture_case, COMMAND* false_case);
 
 /* while */
 typedef struct while_com {
@@ -122,40 +102,19 @@ typedef struct while_com {
   COMMAND *action;
 } WHILE_COM;
 
-WHILE_COM* new_while(int test, COMMAND *action);
-
-/* 计算算术表达式 ((...)) */
-typedef struct arith_com {
-  int line;
-  TOKEN *exp;
-} ARITH_COM;
-
-ARITH_COM *new_arith(TOKEN *exp);
-
-/* 条件测试， [[ ...]]*/
-#define COND_AND 1
-#define COND_OR 2
-#define COND_UNARY 3
-#define COND_BINARY 4
-#define COND_TERM 5
-#define COND_EXPR 6
-
-typedef struct cond_com {
-  int line;
-  int type;
-  TOKEN *op;
-  struct cond_com *left, *right;
-} COND_COM;
-
-COND_COM *new_cond(TOKEN *op, COND_COM *left, COND_COM *right);
+/* while */
+typedef struct until_com {
+  int test;
+  COMMAND *action;
+} UNTIL_COM;
 
 /* 最原子的命令 单词和重定向的集合 */
 typedef struct simple_com {
   int line;
-  TOKEN_LIST *words;   /* 命令名， 参数， 变量赋值等*/
-  REDIRECT *redirects; /* 要执行的重定向 */
+  TOKEN *name;
+  char *args;
   COMMAND *pipeFrom;
-  char *in;
+  char **in;
   char *out;
 } SIMPLE_COM;
 
@@ -167,4 +126,21 @@ typedef struct function_def {
   char *source_file; /*函数定义在哪个文件（如有）*/
 } FUNCTION_DEF;
 
+typedef struct assign_com {
+  char *name;
+  VAL value;
+  VAR_TYPE type;
+} ASSIGN_COM;
 
+COMMAND *new_assign_com(char *name, VAL v, VAR_TYPE type);
+
+COMMAND *new_if_com(char *test, COMMAND *true_case, COMMAND *false_case);
+
+COMMAND *new_simple_com(TOKEN *name, char *args, char **in);
+
+COMMAND *new_until_com(char *test, COMMAND *action);
+
+COMMAND *new_while_com(char *test, COMMAND *action);
+
+COMMAND *new_for_com(char *name, char **map_list, int len_list,
+                     COMMAND *action);

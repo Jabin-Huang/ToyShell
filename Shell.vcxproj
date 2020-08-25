@@ -143,9 +143,10 @@
     <ClCompile Include="exec.c" />
     <ClCompile Include="hash.c" />
     <ClCompile Include="lexer.c" />
-    <ClCompile Include="shell.c" />
     <ClCompile Include="parser.c" />
+    <ClCompile Include="shell.c" />
     <ClCompile Include="stack.c" />
+    <ClCompile Include="variable.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
