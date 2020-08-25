@@ -292,6 +292,7 @@ char* var_expand(char* exp) {
       }
       Var* v = val_get(temp);
       char *ele = NULL;
+	
       if (v->type == INT) {
         ele = num2String(v->value.numVal);
       } else {
@@ -299,6 +300,8 @@ char* var_expand(char* exp) {
       } 
       str = strcat(str, ele);
     } else {
+		printf("test:");
+		
       int len = strlen(str);
       str[len++] = *exp;
       str[len] = '\0';
