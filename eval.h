@@ -28,7 +28,7 @@ Operator optr2rank(char *op);
 
 char orderBetween(char *op1, char *op2);
 
-int cal(char *exp);
+void* cal(char *exp, int flag);
 
 int *calcu(int t1, char *op, int t2);
 

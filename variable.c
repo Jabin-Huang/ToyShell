@@ -8,16 +8,16 @@
 
 void create_symbolTable() { var_table = hash_create(0); }
 
-Var* val_get(char* name) {
+Var* var_get(char* name) {
   BUCKET_CONTENTS* item;
   if (item = hash_search(name, var_table)) {
     return (Var*)item->data;
   } else {
-    return var_insert(name, NULL);
+    return var_update(name, NULL);
   }
 }
 
-Var* var_insert(char* name, Var* v) {
+Var* var_update(char* name, Var* v) {
   BUCKET_CONTENTS* item = hash_search(name, var_table);
   if (item == NULL) item = hash_insert(name, var_table);
   if (v != NULL) {
@@ -32,6 +32,7 @@ Var* var_insert(char* name, Var* v) {
     return item->data;
   }
 }
+
 
 char* num2String(int v) {
   char* s = newStr(0);

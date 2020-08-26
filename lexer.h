@@ -24,5 +24,3 @@ void lex_init();
 TOKEN* add_Val(char* );
 TOKEN* scan();
 TOKEN* newToken(char* , unsigned int );
-TOKEN_LIST* token_insert(TOKEN_LIST*, TOKEN*);
-TOKEN_LIST* newTokenList();

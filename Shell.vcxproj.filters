@@ -27,9 +27,6 @@
     <ClCompile Include="eval.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="shell.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="exec.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -40,6 +37,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="variable.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mysh.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

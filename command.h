@@ -48,23 +48,6 @@ typedef struct connection {
   int connector;
 } CONNECTION;
 
-/* Values for FLAGS word in a PATTERN_LIST */
-#define CASEPAT_FALLTHROUGH 0x01
-#define CASEPAT_TESTNEXT 0x02
-
-/*case 中的模式 */
-typedef struct pattern_list {
-  struct pattern_list *next;
-  TOKEN_LIST *patterns; /* 需测试的模式 */
-  COMMAND *action;      /* 模式测试成功后执行的命令 */
-} PATTERN_LIST;
-
-/* case */
-typedef struct case_com {
-  int line;
-  TOKEN *word;           /*要测试的值*/
-  PATTERN_LIST *clauses; /*进行匹配的模式链表*/
-} CASE_COM;
 
 /* for name [ [ in [ word ... ] ] ; ] do list ; done */
 typedef struct for_com {
@@ -128,11 +111,11 @@ typedef struct function_def {
 
 typedef struct assign_com {
   char *name;
-  VAL value;
+  char *exp;
   VAR_TYPE type;
 } ASSIGN_COM;
 
-COMMAND *new_assign_com(char *name, VAL v, VAR_TYPE type);
+COMMAND *new_assign_com(char *name, char *exp, VAR_TYPE type);
 
 COMMAND *new_if_com(char *test, COMMAND *true_case, COMMAND *false_case);
 

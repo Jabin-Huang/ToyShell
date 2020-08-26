@@ -42,15 +42,10 @@
 #define FILE_PATH 297
 #define EXP 298
 #define ARG 299
+#define FINAL_ARG 300
 
 typedef struct token {
   char *lexeme;
   unsigned int tag;
 } TOKEN;
-
-/* µ•¥ ¡¥±Ì */
-typedef struct token_list {
-  struct token_list *next;
-  TOKEN *word;
-} TOKEN_LIST;
 

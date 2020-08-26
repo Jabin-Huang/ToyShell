@@ -81,72 +81,77 @@ char orderBetween(char *op1, char *op2) {
   return pri[optr2rank(op1)][optr2rank(op2)];
 }
 
-int cal(char* exp) {
+void* cal(char* exp, int flag) {
   exp = var_expand(exp);
-  STACK opnd = {0, NULL};  //运算数;
-  STACK optr = {0, NULL};  //运算符;
-  char *eoe = savestring("");
-  stack_push(&optr, eoe); //哨兵
-  while (optr.size != 0) {
-    if (isNum(*exp)) {
-      readNumber(&exp, &opnd);   
-    } else {
-      switch (orderBetween((char *)optr.top->data, exp)) {
-        case '<':
-          readOPtr(&exp, &optr);
-          break;
-        case '=': {
-          STACK_CONTENTS *t = stack_pop(&optr);
-          char *op = (char*)t->data;
-          free(op);
-          op = NULL;
-          free(t);
-          t = NULL;
-          exp++;
-          break;
-        }
-        case '>': {
-          STACK_CONTENTS *t = stack_pop(&optr);
-          char *op = (char *)t->data;
-          if ('!' == op[0] && '=' != op[1]) { //一元
-            STACK_CONTENTS *t = stack_pop(&opnd);
-            int *n = (int *)t->data;
+  void *res = NULL;
+  if (flag == 0 ) {
+    STACK opnd = {0, NULL};  //运算数;
+    STACK optr = {0, NULL};  //运算符;
+    char *eoe = savestring("");
+    stack_push(&optr, eoe);  //哨兵
+    while (optr.size != 0) {
+      if (isNum(*exp)) {
+        readNumber(&exp, &opnd);
+      } else {
+        switch (orderBetween((char *)optr.top->data, exp)) {
+          case '<':
+            readOPtr(&exp, &optr);
+            break;
+          case '=': {
+            STACK_CONTENTS *t = stack_pop(&optr);
+            char *op = (char *)t->data;
+            free(op);
+            op = NULL;
             free(t);
             t = NULL;
-            stack_push(&opnd, calcu(NULL, op, *n));
-            free(n);
-            n = NULL;
-          } else {//二元
-            STACK_CONTENTS *t2 = stack_pop(&opnd);
-            STACK_CONTENTS *t1 = stack_pop(&opnd);
-            int *n2 = (int *)t2->data;
-            int *n1 = (int *)t1->data;
-            free(t1);
-            t1 = NULL;
-            free(t2);
-            t2 = NULL;
-            stack_push(&opnd, calcu(*n1, op, *n2));
-            free(n1);
-            n1 = NULL;
-            free(n2);
-            n2 = NULL;
+            exp++;
+            break;
           }
-          free(op);
-          op = NULL;
-          free(t);       
-          t = NULL;
-          break;
+          case '>': {
+            STACK_CONTENTS *t = stack_pop(&optr);
+            char *op = (char *)t->data;
+            if ('!' == op[0] && '=' != op[1]) {  //一元
+              STACK_CONTENTS *t = stack_pop(&opnd);
+              int *n = (int *)t->data;
+              free(t);
+              t = NULL;
+              stack_push(&opnd, calcu(NULL, op, *n));
+              free(n);
+              n = NULL;
+            } else {  //二元
+              STACK_CONTENTS *t2 = stack_pop(&opnd);
+              STACK_CONTENTS *t1 = stack_pop(&opnd);
+              int *n2 = (int *)t2->data;
+              int *n1 = (int *)t1->data;
+              free(t1);
+              t1 = NULL;
+              free(t2);
+              t2 = NULL;
+              stack_push(&opnd, calcu(*n1, op, *n2));
+              free(n1);
+              n1 = NULL;
+              free(n2);
+              n2 = NULL;
+            }
+            free(op);
+            op = NULL;
+            free(t);
+            t = NULL;
+            break;
+          }
+          default:
+            exit(-1);
         }
-        default:
-          exit(-1);
       }
     }
+    STACK_CONTENTS *t = stack_pop(&opnd);
+    res =  (int *)t->data;
+    free(t);
+    t = NULL;
+  } else if(flag == 1){
+    res = exp;
   }
-  STACK_CONTENTS *t = stack_pop(&opnd);
-  int *res = (int *)t->data;
-  free(t);
-  t = NULL;
-  return *res;
+  return res;
 }
 
 int* calcu(int t1, char *op, int t2) { 
@@ -289,11 +294,11 @@ char* var_expand(char* exp) {
         temp[len] = '\0';
        
       }
-      Var* v = val_get(temp);
+      Var* v = var_get(temp);
       char *ele = NULL;
 	
       if (v->type == _INT) {
-        ele = num2String(v->value.numVal);
+        ele = num2String(v->value.exp);
       } else {
         ele = v->value.str;
       } 

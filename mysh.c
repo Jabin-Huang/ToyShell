@@ -7,10 +7,8 @@
 #include"lexer.h"
 
 
-void test_eval();
-
 int main(int agrc, char **argv) {
-  FILE * fp = fopen("C:\\Users\\Jabin\\source\\repos\\Shell\\test.sh", "r");
+  FILE * fp = fopen(argv[1], "r");
   if (fp == NULL) {
     printf("file not exist!\n");
   }
@@ -19,12 +17,9 @@ int main(int agrc, char **argv) {
     COMMAND *cmd =  _statement();
     exec_command(cmd);
   }
-  fclose(fp);
+  getch();
+  if(fp) fclose(fp);
   return 0;
 }
 
-void test_eval() { 
-	char *s = "4*(1+20)/6&&15";
-    printf("%d\n", cal(s));
-}
 

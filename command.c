@@ -5,10 +5,10 @@
 #include"variable.h"
 #include"lexer.h"
 
-COMMAND* new_assign_com(char* name, VAL v ,VAR_TYPE type) {
+COMMAND* new_assign_com(char* name, char* v ,VAR_TYPE type) {
   ASSIGN_COM* assign_com = (ASSIGN_COM *) (malloc(sizeof(ASSIGN_COM)));
   assign_com->name = name;
-  assign_com->value = v;
+  assign_com->exp = v;
   assign_com->type = type;
   COMMAND* assign = (COMMAND*)(malloc(sizeof(COMMAND)));
   assign->line = lexer.line;
@@ -63,7 +63,7 @@ COMMAND* new_for_com(char* var, char** list, int len_list,  COMMAND* action) {
   for_com->action = action;
   COMMAND* _for = (COMMAND*)(malloc(sizeof(COMMAND)));
   _for->line = lexer.line;
-  _for->type = cm_until;
+  _for->type = cm_for;
   _for->next = NULL;
   _for->value.For = for_com;
   return _for;

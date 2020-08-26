@@ -19,7 +19,28 @@ TOKEN word_token_alist[] = {{"if", IF},
                             {"do", DO},
                             {"done", DONE},
                             {"function", FUNCTION},
-                            {"echo", BUILTIN}};
+                            {"echo", BUILTIN},
+                            {"ls", BUILTIN},
+                            {"mkdir", BUILTIN},
+                            {"cat", BUILTIN},
+                            {"rm", BUILTIN},
+                            {"cp", BUILTIN},
+                            {"rename", BUILTIN},
+                            {"set", BUILTIN},
+                            {"find", BUILTIN},
+                            {"cls", BUILTIN},
+                            {"pause", BUILTIN},
+                            {"enviable", BUILTIN},
+                            {"ps", BUILTIN},
+                            {"pwd", BUILTIN},
+                            {"date", BUILTIN},
+                            {"cd", BUILTIN},
+                            {"touch", BUILTIN},
+                            {"rmdir", BUILTIN},
+                            {"rename", BUILTIN},
+                            {"mv", BUILTIN},
+                            {"help", BUILTIN}
+};
 
 void _readch() { 
     lexer.last_peek = lexer.peek;
@@ -44,22 +65,6 @@ TOKEN* newToken(char* str, unsigned int tag) {
   return NULL;
 }
 
-TOKEN_LIST* newTokenList() {
-  TOKEN_LIST* list = (TOKEN_LIST*)malloc(sizeof(TOKEN_LIST));
-  if (list != NULL) {
-    list->next = NULL;
-    list->word = NULL;
-    return list;
-  }
-  return NULL;
-}
-
-TOKEN_LIST* token_insert(TOKEN_LIST* list, TOKEN* token) {
-  list->next = newTokenList();
-  list->next->word = token;
-  list->next->next = NULL;
-  return list->next;
-}
 
 int isLetter(char c) { return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z'; }
 
@@ -140,6 +145,7 @@ TOKEN* scan() {
   if (lexer.last && (lexer.last->tag == ARG || lexer.last->tag == BUILTIN ||
       lexer.last->tag == OPNION) && lexer.last_peek != '\n') {
     char* s = readStr();
+    if (lexer.peek == '\n') return newToken(s, FINAL_ARG);
     return newToken(s, ARG);
   } 
 
@@ -245,25 +251,53 @@ TOKEN* scan() {
     if (item = hash_search(str, lexer.reserve_table)) {
       lexer.last = (TOKEN*)item->data;
       return item->data;
-    } else
-      exit(-1);
+    } 
+    else if (lexer.last && (lexer.last->tag == _IN || lexer.last->tag == STRING))
+      return newToken(str, STRING);
+    else 
+      return newToken(str,VAR);
   }
 
   /*变量引用*/
   if (lexer.peek == '$') {
     char* str = newStr(0);
-    str[0] = '$';
-    int len = 1;
+    int len = 0;
     _readch();
     if (lexer.peek == '{') {
+      len = 1;
+      str[0] = '$';
+      _readch();
       do {
         str[len++] = lexer.peek;
         _readch();
       } while (lexer.peek != '}');
-      str[len++] = '}';
+      _readch();
       str[len] = '\0';
       lexer.peek = ' ';
-    } else {
+    } else if (lexer.peek == '(') {
+      len = 0;
+      _readch();
+      _readch();
+      char* str = newStr(0);
+      int cnt = 0;  //通过括号匹配，使表达式中的 "))"不被误解析为结束分界符
+      while (!(cnt == -1 && lexer.peek == ')' && lexer.last_peek == ')')) {
+        if (lexer.peek == ' ') {
+          _readch();
+          continue;
+        }
+        str[len++] = lexer.peek;
+        if (lexer.peek == '(') cnt++;
+        if (lexer.peek == ')') cnt--;
+        _readch();
+      }
+      //倒数第二个')'不应出现在表达式中
+      str[--len] = '\0';
+      lexer.peek = ' ';
+      return newToken(str, EXP);
+    }
+    else {
+      len = 1;
+      str[0] = '$';
       do {
         str[len++] = lexer.peek;
         _readch();

@@ -41,8 +41,12 @@ COMMAND* _statement() {
       return _for();
     case BUILTIN:
       return _builtin(NULL);
-    default:
+    case VAR:
       return _assign();
+    default:
+      printf("按任意键退出\n");
+      getch();
+      exit(0);
   }
 }
 
@@ -138,7 +142,7 @@ COMMAND* _until() {
 }
 
 char* _exp() {
-  if (look->tag == EXP || look->tag == NUM || look->tag == STRING) {
+  if (look->tag == EXP || look->tag == NUM || look->tag == HAS_DOLLAR) {
     char* exp = look->lexeme;
     match(look->tag);
     return exp;
@@ -156,8 +160,9 @@ COMMAND* _for() {
   int len_list = 0;
   while (look->tag != DO) {
     if (look->tag == STRING) {
-      list[len_list++] = newStr(0);
+      list[len_list] = newStr(0);
       strcpy(list[len_list], look->lexeme);
+      len_list++;
       match(STRING);
     }
   }
@@ -184,14 +189,21 @@ COMMAND* _builtin(COMMAND* pipefrom) {
     match(OPNION);
   }
   int i = 0;
-  if (look->tag == ARG) {
+  if (look->tag == ARG || look->tag == FINAL_ARG) {
     while (look->tag == ARG) {
       int len = strlen(look->lexeme) + 1;
       char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
       if (s == NULL) exit(-1);
       in[i] = strcpy(s, (look->lexeme));
+      i++;
       match(ARG);
     }
+    int len = strlen(look->lexeme) + 1;
+    char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
+    if (s == NULL) exit(-1);
+    in[i] = strcpy(s, (look->lexeme));
+    i++;
+    match(FINAL_ARG);
   }
 
   /*管道、重定向*/
@@ -213,16 +225,16 @@ COMMAND* _assign() {
   match(VAR);
   match('=');
   TOKEN* value = look;
-  VAL v;
+  char *exp;
   VAR_TYPE t;
   if (look->tag == STRING) {
-    v.str = newStr(0);
+    exp = newStr(0);
     t = STR;
-    strcpy(v.str, look->lexeme);
+    strcpy(exp, look->lexeme);
     match(STRING);
   } else {
-    v.numVal = cal(_exp());
+    exp = _exp();
     t = _INT;
   }
-  return new_assign_com(name, v, t);
+  return new_assign_com(name, exp, t);
 }
