@@ -35,13 +35,7 @@ void cls();
 void pauseP();
 char* infoTransform(char *);
 
-#define NEW_DIRECTORY "F:\\OSClassDesign\\testDirectory\\test1"
-#define TARGET_FILE "F:\\OSClassDesign\\testDirectory\\test1\\2.txt"
-#define SOURCE "F:\\OSClassDesign\\testDirectory\\test1\\scscxt"
-#define TARGET "F:\\OSClassDesign\\testDirectory\\test1\\2.txt\\th.txt"
-
-
-
+char* CURDIR;
 
 void exec_command(COMMAND* cmd);
 

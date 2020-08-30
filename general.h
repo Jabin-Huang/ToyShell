@@ -5,5 +5,5 @@ typedef void sh_free_func_t(void*);  //定义一个函数类型，该函数用于释放内存
 #define DEFAULT_STRLEN 80
 
 #if !defined(savestring)
-#define savestring(x) (char*)strcpy(malloc(1 + strlen(x)), (x))
+#define savestring(x) (char*)strcpy_s(malloc(1 + strlen(x)), 1 + strlen(x), (x))
 #endif

@@ -302,7 +302,7 @@ char* var_expand(char* exp) {
       } else {
         ele = v->value.str;
       } 
-      str = strcat(str, ele);
+      str = strcat_s(str, strlen(str) + strlen(ele) + 1 , ele);
     } else {
       int len = strlen(str);
       str[len++] = *exp;

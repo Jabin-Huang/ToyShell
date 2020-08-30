@@ -8,11 +8,15 @@
 
 
 int main(int agrc, char **argv) {
-  FILE * fp = fopen(argv[1], "r");
+  FILE *fp = NULL;
+  errno_t  err = 0;
+  if(argv[1]) err = fopen_s(&fp, argv[1], "r");
   if (fp == NULL) {
-    printf("file not exist!\n");
+    fprintf(stderr, "File open failed! Please input in hands:\n");
+    fp = stdin;
   }
   parser_init(fp);
+  printf("%d\n", lexer.peek);
   while (lexer.peek != EOF) {
     COMMAND *cmd =  _statement();
     exec_command(cmd);

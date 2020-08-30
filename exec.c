@@ -7,7 +7,6 @@
 #include "eval.h"
 #include "variable.h"
 #include "general.h"
-char* CURDIR = "F:\\VS data\\default save\\Repos\\Project1\\Project1";
 
 void exec_command(COMMAND* cmd) {
   switch (cmd->type) {
@@ -240,8 +239,8 @@ void readFile(const char* target) {
     }
     buff[file_size] = '\0';
     char* infostr4 = malloc(strlen(infostr3) + strlen(buff) + 1);
-    strcpy(infostr4, infostr3);
-    strcat(infostr4, buff);
+    strcpy_s(infostr4, strlen(infostr3)+1, infostr3);
+    strcat_s(infostr4, strlen(infostr4) + strlen(buff) + 1, buff);
     infoTransform(infostr4);
     CloseHandle(newFile);
   }
@@ -257,8 +256,8 @@ void deleteFile(const char* target) {
                                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (existFile == INVALID_HANDLE_VALUE) {
     char* infostr4 = malloc(strlen(infostr1) + strlen(target) + 1);
-    strcpy(infostr4, infostr1);
-    strcat(infostr4, target);
+    strcpy_s(infostr4, strlen(infostr1) + 1, infostr1);
+    strcat_s(infostr4, strlen(infostr4) + strlen(target) + 1, target);
     infoTransform(infostr4);
 
     printf("can't find %s\n", target);
@@ -315,8 +314,8 @@ void findfile3(const char* type) {
   struct _finddata_t test;
   char* regex3 = "*.";
   char* regex4 = malloc(strlen(regex3) + strlen(type) + 1);
-  strcpy(regex4, regex3);
-  strcat(regex4, type);
+  strcpy_s(regex4, strlen(regex3)  + 1, regex3);
+  strcat_s(regex4, strlen(regex4) + strlen(type) + 1, type);
   // printf("regex4: %s\n",regex4);
   intptr_t hnd = _findfirst(regex4, &data);
   if (hnd < 0) {
@@ -355,9 +354,9 @@ void findfile2(char* key) {
   char* regex5 = "*.*";
   // printf("sizeof(regex2):%d\n", sizeof(regex2));
   char* regex4 = malloc(strlen(regex2) + strlen(key) + strlen(regex5) + 1);
-  strcpy(regex4, regex2);
-  strcat(regex4, key);
-  strcat(regex4, regex5);
+  strcpy_s(regex4, strlen(regex2) + 1,regex2);
+  strcat_s(regex4, strlen(regex4)+strlen(key) + 1, key);
+  strcat_s(regex4, strlen(regex4) + strlen(regex5) + 1,  regex5);
   // strcat_s(regex2,16, key);
   // strcat_s(regex2, 16, "*.*");
 
@@ -513,8 +512,8 @@ void fileReName(const char* source, const char* target) {
                                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (existFile == INVALID_HANDLE_VALUE) {
     char* infostr4 = malloc(strlen(infostr1) + strlen(target) + 1);
-    strcpy(infostr4, infostr1);
-    strcat(infostr4, target);
+    strcpy_s(infostr4, strlen(infostr1) + 1, infostr1);
+    strcat_s(infostr4, strlen(infostr4) + strlen(target) + 1, target);
     infoTransform(infostr4);
     printf("can't find %s\n", target);
     CloseHandle(existFile);
@@ -582,9 +581,9 @@ void environShow(const char* target) {
   else {
     char* infostr2 =
         malloc(strlen(target) + strlen(" : ") + strlen(buffer) + 1);
-    strcpy(infostr2, target);
-    strcat(infostr2, " : ");
-    strcat(infostr2, buffer);
+    strcpy_s(infostr2, strlen(target) + 1, target);
+    strcat_s(infostr2, strlen(infostr2) + 4, " : ");
+    strcat_s(infostr2, strlen(infostr2) + strlen(buffer) + 1, buffer);
     infoTransform(infostr2);
   }
 }

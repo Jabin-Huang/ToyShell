@@ -44,9 +44,9 @@ COMMAND* _statement() {
     case VAR:
       return _assign();
     default:
-      printf("按任意键退出\n");
+      printf("parse error in _statement\n");
       getch();
-      exit(0);
+      exit(-1);
   }
 }
 
@@ -146,22 +146,27 @@ char* _exp() {
     char* exp = look->lexeme;
     match(look->tag);
     return exp;
-  }
+  } else
+    return NULL;
 }
 
 COMMAND* _for() {
   char* var;
   char** list = (char**)malloc(50 * sizeof(char*));
+  if (list == NULL) {
+    fprintf(stderr, "malloc memory failed!\n");
+    exit(-1);
+  } 
   match(FOR);
   var = newStr(0);
-  strcpy(var, look->lexeme);
+  strcpy_s(var, strlen(look->lexeme) + 1, look->lexeme);
   match(VAR);
   match(_IN);
   int len_list = 0;
   while (look->tag != DO) {
     if (look->tag == STRING) {
       list[len_list] = newStr(0);
-      strcpy(list[len_list], look->lexeme);
+      strcpy_s(list[len_list], strlen(look->lexeme) + 1, look->lexeme);
       len_list++;
       match(STRING);
     }
@@ -194,14 +199,14 @@ COMMAND* _builtin(COMMAND* pipefrom) {
       int len = strlen(look->lexeme) + 1;
       char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
       if (s == NULL) exit(-1);
-      in[i] = strcpy(s, (look->lexeme));
+      in[i] = strcpy_s(s, strlen((look->lexeme)) + 1, (look->lexeme));
       i++;
       match(ARG);
     }
     int len = strlen(look->lexeme) + 1;
     char* s = (char*)malloc(sizeof(char) * (1 + strlen(look->lexeme)));
     if (s == NULL) exit(-1);
-    in[i] = strcpy(s, (look->lexeme));
+    in[i] = strcpy_s(s, strlen(look->lexeme) + 1, (look->lexeme));
     i++;
     match(FINAL_ARG);
   }
@@ -230,7 +235,7 @@ COMMAND* _assign() {
   if (look->tag == STRING) {
     exp = newStr(0);
     t = STR;
-    strcpy(exp, look->lexeme);
+    strcpy_s(exp, strlen(look->lexeme) + 1, look->lexeme);
     match(STRING);
   } else {
     exp = _exp();

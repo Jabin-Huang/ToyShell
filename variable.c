@@ -25,17 +25,20 @@ Var* var_update(char* name, Var* v) {
     return item->data;
   } else {
     Var* new = (Var*)malloc(sizeof(Var));
-    new->name = name;
-    new->value.str = "";
-    new->type = STR;
-    item->data = new;
-    return item->data;
+    if (new) {
+      new->name = name;
+      new->value.str = "";
+      new->type = STR;
+      item->data = new;
+      return item->data;
+    } else
+      fprintf(stderr, "malloc memory failed!\n");
   }
 }
 
 
 char* num2String(int v) {
   char* s = newStr(0);
-  itoa(v, s, 10);
+  _itoa_s(v, s, DEFAULT_STRLEN , 10);
   return s;
 }

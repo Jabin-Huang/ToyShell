@@ -44,7 +44,8 @@ TOKEN word_token_alist[] = {{"if", IF},
 
 void _readch() { 
     lexer.last_peek = lexer.peek;
-    lexer.peek = fgetc(lexer.source); 
+    lexer.peek = fgetc(lexer.source);
+    if (lexer.peek == EOF) exit(0);
 }
 
 int readch(char c) {

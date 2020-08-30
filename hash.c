@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "hash.h"
-
 /*
     buckets:指定的桶数
 */
@@ -33,7 +33,7 @@ int hash_size(HASH_TABLE* table) { return (HASH_ENTRIES(table)); }
 */
 static BUCKET_CONTENTS* copy_bucket_array(BUCKET_CONTENTS* ba,
                                           sh_string_func_t* cpdata) {
-  BUCKET_CONTENTS *new_bucket, *n, *e;
+  BUCKET_CONTENTS *new_bucket = NULL, *n  = NULL, *e = NULL;
 
   if (ba == 0) {
     return ((BUCKET_CONTENTS*)0);
@@ -42,11 +42,20 @@ static BUCKET_CONTENTS* copy_bucket_array(BUCKET_CONTENTS* ba,
   for (n = (BUCKET_CONTENTS*)0, e = ba; e; e = e->next) {
     if (n == 0) {
       new_bucket = (BUCKET_CONTENTS*)malloc(sizeof(BUCKET_CONTENTS));
+      if (new_bucket == NULL) {
+        fprintf(stderr, "malloc memory failed!\n");
+        exit(-1);
+      }
       n = new_bucket;
     } else {
       n->next = (BUCKET_CONTENTS*)malloc(sizeof(BUCKET_CONTENTS));
+      if (n->next == NULL) {
+        fprintf(stderr, "malloc memory failed!\n");
+        exit(-1);
+      }
       n = n->next;
     }
+    
     n->key = savestring(e->key);
     //使用指定的赋值方法（如有），否则使用savestring（ ）
     n->data =
