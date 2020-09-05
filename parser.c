@@ -211,7 +211,7 @@ COMMAND* _builtin(COMMAND* pipefrom) {
     match(FINAL_ARG);
   }
 
-  /*管道、重定向*/
+  /*绠￠亾銆侀噸瀹氬悜*/
 
   /*  if (look->tag =='<') {
       match('<');

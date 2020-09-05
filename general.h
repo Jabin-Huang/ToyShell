@@ -1,6 +1,6 @@
 #pragma once
-typedef char* sh_string_func_t(char*);  //¶¨ÒåÒ»¸öº¯ÊıÀàĞÍ£¬¸Ãº¯ÊıÓÃÓÚ¸´ÖÆ×Ö·û´®
-typedef void sh_free_func_t(void*);  //¶¨ÒåÒ»¸öº¯ÊıÀàĞÍ£¬¸Ãº¯ÊıÓÃÓÚÊÍ·ÅÄÚ´æ
+typedef char* sh_string_func_t(char*);  //å®šä¹‰ä¸€ä¸ªå‡½æ•°ç±»å‹ï¼Œè¯¥å‡½æ•°ç”¨äºå¤åˆ¶å­—ç¬¦ä¸²
+typedef void sh_free_func_t(void*);  //å®šä¹‰ä¸€ä¸ªå‡½æ•°ç±»å‹ï¼Œè¯¥å‡½æ•°ç”¨äºé‡Šæ”¾å†…å­˜
 
 #define DEFAULT_STRLEN 80
 

@@ -8,10 +8,10 @@
 #include "lexer.h"
 
 
-int isNum(char);  //ÔÚlexer.cÖĞÒÑ¶¨Òå
+int isNum(char);  //åœ¨lexer.cä¸­å·²å®šä¹‰
 int isLetter(char);
 
-/*ÔËËã·ûÓÅÏÈµÈ¼¶ [Õ»¶¥] [µ±Ç°]*/
+/*è¿ç®—ç¬¦ä¼˜å…ˆç­‰çº§ [æ ˆé¡¶] [å½“å‰]*/
 const char pri[N_OPTR][N_OPTR] = {    
             /*  (     !    *    /    %    +    -    >=    <=    >    <   ==   !=   &&   ||    )   \0 */
 /* (  */       '<',  '<', '<', '<', '<', '<', '<',  '<',  '<', '<', '<', '<', '<', '<', '<', '=', ' ',
@@ -34,7 +34,7 @@ const char pri[N_OPTR][N_OPTR] = {
 };
 
 
-/*ÓÉÔËËã·û×ªÒë³ö±àºÅ */
+/*ç”±è¿ç®—ç¬¦è½¬è¯‘å‡ºç¼–å· */
 Operator optr2rank(char *op) {
   switch (op[0]) {
     case '(': return L_P; 
@@ -71,7 +71,7 @@ Operator optr2rank(char *op) {
         return OR;
       }
       else  exit(-1);
-    case '\0': return EOE; //ÆğÖ¹·ûÓëÖÕÖ¹·û
+    case '\0': return EOE; //èµ·æ­¢ç¬¦ä¸ç»ˆæ­¢ç¬¦
     default: exit(-1); 
   }
 }
@@ -85,10 +85,10 @@ void* cal(char* exp, int flag) {
   exp = var_expand(exp);
   void *res = NULL;
   if (flag == 0 ) {
-    STACK opnd = {0, NULL};  //ÔËËãÊı;
-    STACK optr = {0, NULL};  //ÔËËã·û;
+    STACK opnd = {0, NULL};  //è¿ç®—æ•°;
+    STACK optr = {0, NULL};  //è¿ç®—ç¬¦;
     char *eoe = savestring("");
-    stack_push(&optr, eoe);  //ÉÚ±ø
+    stack_push(&optr, eoe);  //å“¨å…µ
     while (optr.size != 0) {
       if (isNum(*exp)) {
         readNumber(&exp, &opnd);
@@ -110,7 +110,7 @@ void* cal(char* exp, int flag) {
           case '>': {
             STACK_CONTENTS *t = stack_pop(&optr);
             char *op = (char *)t->data;
-            if ('!' == op[0] && '=' != op[1]) {  //Ò»Ôª
+            if ('!' == op[0] && '=' != op[1]) {  //ä¸€å…ƒ
               STACK_CONTENTS *t = stack_pop(&opnd);
               int *n = (int *)t->data;
               free(t);
@@ -118,7 +118,7 @@ void* cal(char* exp, int flag) {
               stack_push(&opnd, calcu(NULL, op, *n));
               free(n);
               n = NULL;
-            } else {  //¶şÔª
+            } else {  //äºŒå…ƒ
               STACK_CONTENTS *t2 = stack_pop(&opnd);
               STACK_CONTENTS *t1 = stack_pop(&opnd);
               int *n2 = (int *)t2->data;

@@ -2,7 +2,7 @@
 #include "token.h"
 #include "variable.h"
 
-/* Command(ÃüÁî) µÄÖÖÀà */
+/* Command(å‘½ä»¤) çš„ç§ç±» */
 enum command_type {
   cm_for,
   cm_case,
@@ -19,7 +19,7 @@ enum command_type {
   cm_assign,
 };
 
-/* ÃüÁî */
+/* å‘½ä»¤ */
 typedef struct command {
   enum command_type type;
   int line;
@@ -40,7 +40,7 @@ typedef struct command {
   } value;
 } COMMAND;
 
-/* ÃüÁîÆ´½Ó */
+/* å‘½ä»¤æ‹¼æ¥ */
 typedef struct connection {
   int ignore;
   COMMAND *first;
@@ -51,10 +51,10 @@ typedef struct connection {
 
 /* for name [ [ in [ word ... ] ] ; ] do list ; done */
 typedef struct for_com {
-  char *var;       /* Ñ­»·Ê±ÓÃÓÚÓ³ÉäÏàÓ¦ÖµµÄ±äÁ¿ */
-  char **map_list; /* ´ı±éÀúµÄÈ«Ìå¶ÔÏó */
+  char *var;       /* å¾ªç¯æ—¶ç”¨äºæ˜ å°„ç›¸åº”å€¼çš„å˜é‡ */
+  char **map_list; /* å¾…éå†çš„å…¨ä½“å¯¹è±¡ */
   int len_list;
-  COMMAND *action; /*Ñ­»·ÌåÄÚµÄÃüÁî*/
+  COMMAND *action; /*å¾ªç¯ä½“å†…çš„å‘½ä»¤*/
 } FOR_COM;
 
 /*
@@ -74,9 +74,9 @@ typedef struct arith_for_com {
 
 /* if */
 typedef struct if_com {
-  char* test;            /*²âÊÔÌõ¼ş*/
-  COMMAND *true_case;  /* Õæ³ö¿Ú */
-  COMMAND *false_case; /* ¼Ù³ö¿Ú */
+  char* test;            /*æµ‹è¯•æ¡ä»¶*/
+  COMMAND *true_case;  /* çœŸå‡ºå£ */
+  COMMAND *false_case; /* å‡å‡ºå£ */
 } IF_COM;
 
 /* while */
@@ -91,7 +91,7 @@ typedef struct until_com {
   COMMAND *action;
 } UNTIL_COM;
 
-/* ×îÔ­×ÓµÄÃüÁî µ¥´ÊºÍÖØ¶¨ÏòµÄ¼¯ºÏ */
+/* æœ€åŸå­çš„å‘½ä»¤ å•è¯å’Œé‡å®šå‘çš„é›†åˆ */
 typedef struct simple_com {
   int line;
   TOKEN *name;
@@ -101,12 +101,12 @@ typedef struct simple_com {
   char *out;
 } SIMPLE_COM;
 
-/* º¯Êı¶¨Òå */
+/* å‡½æ•°å®šä¹‰ */
 typedef struct function_def {
   int line;
   TOKEN *name;
   COMMAND *command;
-  char *source_file; /*º¯Êı¶¨ÒåÔÚÄÄ¸öÎÄ¼ş£¨ÈçÓĞ£©*/
+  char *source_file; /*å‡½æ•°å®šä¹‰åœ¨å“ªä¸ªæ–‡ä»¶ï¼ˆå¦‚æœ‰ï¼‰*/
 } FUNCTION_DEF;
 
 typedef struct assign_com {

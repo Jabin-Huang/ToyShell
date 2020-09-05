@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "hash.h"
 /*
-    buckets:Ö¸¶¨µÄÍ°Êı
+    buckets:æŒ‡å®šçš„æ¡¶æ•°
 */
 HASH_TABLE* hash_create(int buckets) {
   HASH_TABLE* new_table;
@@ -28,8 +28,8 @@ HASH_TABLE* hash_create(int buckets) {
 int hash_size(HASH_TABLE* table) { return (HASH_ENTRIES(table)); }
 
 /*
-    ba:¸´ÖÆµÄÄÚÈİ£¬
-    sh_string_func_t£º¸´ÖÆËùÓÃµÄ·½·¨
+    ba:å¤åˆ¶çš„å†…å®¹ï¼Œ
+    sh_string_func_tï¼šå¤åˆ¶æ‰€ç”¨çš„æ–¹æ³•
 */
 static BUCKET_CONTENTS* copy_bucket_array(BUCKET_CONTENTS* ba,
                                           sh_string_func_t* cpdata) {
@@ -57,7 +57,7 @@ static BUCKET_CONTENTS* copy_bucket_array(BUCKET_CONTENTS* ba,
     }
     
     n->key = savestring(e->key);
-    //Ê¹ÓÃÖ¸¶¨µÄ¸³Öµ·½·¨£¨ÈçÓĞ£©£¬·ñÔòÊ¹ÓÃsavestring£¨ £©
+    //ä½¿ç”¨æŒ‡å®šçš„èµ‹å€¼æ–¹æ³•ï¼ˆå¦‚æœ‰ï¼‰ï¼Œå¦åˆ™ä½¿ç”¨savestringï¼ˆ ï¼‰
     n->data =
         e->data ? (cpdata ? (*cpdata)(e->data) : savestring(e->data)) : NULL;
     n->khash = e->khash;
@@ -68,8 +68,8 @@ static BUCKET_CONTENTS* copy_bucket_array(BUCKET_CONTENTS* ba,
 }
 
 /*
-    table:±»¸´ÖÆµÄhashtable
-    cpdata£ºbucketµÄ¸´ÖÆ·½·¨
+    table:è¢«å¤åˆ¶çš„hashtable
+    cpdataï¼šbucketçš„å¤åˆ¶æ–¹æ³•
 */
 HASH_TABLE* hash_copy(HASH_TABLE* table, sh_string_func_t* cpdata) {
   HASH_TABLE* new_table;
@@ -98,11 +98,11 @@ unsigned int hash_string(const char* s) {
   return i;
 }
 
-/* h Îª×Ö·û´®¹şÏ£Öµ£¬HASH_BUCKET½øÒ»²½½«Æä×ª»»ÎªË÷Òı */
+/* h ä¸ºå­—ç¬¦ä¸²å“ˆå¸Œå€¼ï¼ŒHASH_BUCKETè¿›ä¸€æ­¥å°†å…¶è½¬æ¢ä¸ºç´¢å¼• */
 #define HASH_BUCKET(s, t, h) (((h) = hash_string(s)) & ((t)->nbuckets - 1))
 
 /*
-    ·µ»ØstrËùÔÚbucketµÄË÷Òı
+    è¿”å›stræ‰€åœ¨bucketçš„ç´¢å¼•
 */
 int hash_bucket(const char* str, HASH_TABLE* table) {
   unsigned int h;
@@ -110,7 +110,7 @@ int hash_bucket(const char* str, HASH_TABLE* table) {
 }
 
 /*
-    ·µ»ØstrËùÔÚµÄbucket_contentÖ¸Õë£¬Èç¹û²»´æÔÚÔò·µ»ØNULL¡£
+    è¿”å›stræ‰€åœ¨çš„bucket_contentæŒ‡é’ˆï¼Œå¦‚æœä¸å­˜åœ¨åˆ™è¿”å›NULLã€‚
 */
 BUCKET_CONTENTS* hash_search(const char* str, HASH_TABLE* table) {
   BUCKET_CONTENTS* list;
@@ -135,7 +135,7 @@ BUCKET_CONTENTS* hash_search(const char* str, HASH_TABLE* table) {
 }
 
 /*
-    É¾³ıÒ»¸ö½áµã£¨Î´ÊÍ·ÅÄÚ´æ£©£¬·µ»Ø¸Ã½áµãµÄÖ¸Õë£¬ÓÉÓÃ»§¾ö¶¨ÊÍ·Å
+    åˆ é™¤ä¸€ä¸ªç»“ç‚¹ï¼ˆæœªé‡Šæ”¾å†…å­˜ï¼‰ï¼Œè¿”å›è¯¥ç»“ç‚¹çš„æŒ‡é’ˆï¼Œç”±ç”¨æˆ·å†³å®šé‡Šæ”¾
 */
 BUCKET_CONTENTS* hash_remove(const char* str, HASH_TABLE* table) {
   int bucket;
@@ -223,7 +223,7 @@ void hash_dispose(HASH_TABLE* table) {
 
 
 /*
-    hash_wfunc:±éÀúÊ±²ÉÈ¡µÄ·½·¨
+    hash_wfunc:éå†æ—¶é‡‡å–çš„æ–¹æ³•
 
 */
 void hash_walk(HASH_TABLE* table, hash_wfunc* func) {

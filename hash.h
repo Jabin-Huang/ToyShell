@@ -4,15 +4,15 @@
 typedef struct bucket_contents {
   struct bucket_contents* next;
   char* key;		
-  void* data;			//void* ÍòÄÜÖ¸Õë
-  unsigned int khash;   //key¹şÏ£¹ıºóµÄÖµ
-  int times_found;		//±»²éÕÒµ½µÄ´ÎÊı
+  void* data;			//void* ä¸‡èƒ½æŒ‡é’ˆ
+  unsigned int khash;   //keyå“ˆå¸Œè¿‡åçš„å€¼
+  int times_found;		//è¢«æŸ¥æ‰¾åˆ°çš„æ¬¡æ•°
 } BUCKET_CONTENTS;
 
 typedef struct hash_table {
   BUCKET_CONTENTS** bucket_array;
-  int nbuckets;  //¹şÏ£Í°Êı
-  int nentries;  //×ÜÔªËØ¸öÊı
+  int nbuckets;  //å“ˆå¸Œæ¡¶æ•°
+  int nentries;  //æ€»å…ƒç´ ä¸ªæ•°
 }HASH_TABLE;
 
 typedef int hash_wfunc(BUCKET_CONTENTS*);
@@ -35,13 +35,13 @@ BUCKET_CONTENTS* hash_remove(const char*, HASH_TABLE*);
 
 unsigned int hash_string(const char* );
 
-//»ñÈ¡Ö¸¶¨bucketµÄÔªËØ
+//è·å–æŒ‡å®šbucketçš„å…ƒç´ 
 #define hash_items(bucket, table) \
 	((table && (bucket < table->nbuckets))? \
 	  table->bucket_array[bucket]: \
 	  (BUCKET_CONTENTS*) NULL)
 
-//Ä¬ÈÏBUCKETSÊıÁ¿
+//é»˜è®¤BUCKETSæ•°é‡
 #define DEFAULT_HASH_BUCKETS 128
 
 #define HASH_ENTRIES(ht) ((ht) ? (ht)->nentries : 0)

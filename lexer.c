@@ -127,7 +127,7 @@ TOKEN* add_Val(char* name) {
 
 TOKEN* scan() {
   if (lexer.peek == EOF) return NULL;
-  /* ºöÂÔ×¢ÊÍ, ¿Õ¸ñ */
+  /* å¿½ç•¥æ³¨é‡Š, ç©ºæ ¼ */
   for (;; _readch()) {
     if (lexer.peek == '#') {
       do {
@@ -142,7 +142,7 @@ TOKEN* scan() {
       break;
   }
 
-  //ÃüÁî²ÎÊı
+  //å‘½ä»¤å‚æ•°
   if (lexer.last && (lexer.last->tag == ARG || lexer.last->tag == BUILTIN ||
       lexer.last->tag == OPNION) && lexer.last_peek != '\n') {
     char* s = readStr();
@@ -150,13 +150,13 @@ TOKEN* scan() {
     return newToken(s, ARG);
   } 
 
-  //for Ó³ÉäÁĞ±íµÄÔªËØ
+  //for æ˜ å°„åˆ—è¡¨çš„å…ƒç´ 
   if (lexer.last == _IN) {
     char* s = readStr();
     return newToken(s, STRING);
   }
 
-  /*ÔËËã·û*/
+  /*è¿ç®—ç¬¦*/
   switch (lexer.peek) {
     case '&': {
       if (readch('&'))
@@ -222,7 +222,7 @@ TOKEN* scan() {
       break;
   }
 
-  /*Êı×Ö*/
+  /*æ•°å­—*/
   if (isNum(lexer.peek)) {
     char* str = newStr(0);
     int len = 0;
@@ -235,7 +235,7 @@ TOKEN* scan() {
   }
   
   
-  /*±£Áô´Ê, ±äÁ¿¶¨Òå*/
+  /*ä¿ç•™è¯, å˜é‡å®šä¹‰*/
   if (isLetter(lexer.peek) || lexer.peek == '_') {
     char* str = newStr(0);
     int len = 0;
@@ -259,7 +259,7 @@ TOKEN* scan() {
       return newToken(str,VAR);
   }
 
-  /*±äÁ¿ÒıÓÃ*/
+  /*å˜é‡å¼•ç”¨*/
   if (lexer.peek == '$') {
     char* str = newStr(0);
     int len = 0;
@@ -280,7 +280,7 @@ TOKEN* scan() {
       _readch();
       _readch();
       char* str = newStr(0);
-      int cnt = 0;  //Í¨¹ıÀ¨ºÅÆ¥Åä£¬Ê¹±í´ïÊ½ÖĞµÄ "))"²»±»Îó½âÎöÎª½áÊø·Ö½ç·û
+      int cnt = 0;  //é€šè¿‡æ‹¬å·åŒ¹é…ï¼Œä½¿è¡¨è¾¾å¼ä¸­çš„ "))"ä¸è¢«è¯¯è§£æä¸ºç»“æŸåˆ†ç•Œç¬¦
       while (!(cnt == -1 && lexer.peek == ')' && lexer.last_peek == ')')) {
         if (lexer.peek == ' ') {
           _readch();
@@ -291,7 +291,7 @@ TOKEN* scan() {
         if (lexer.peek == ')') cnt--;
         _readch();
       }
-      //µ¹ÊıµÚ¶ş¸ö')'²»Ó¦³öÏÖÔÚ±í´ïÊ½ÖĞ
+      //å€’æ•°ç¬¬äºŒä¸ª')'ä¸åº”å‡ºç°åœ¨è¡¨è¾¾å¼ä¸­
       str[--len] = '\0';
       lexer.peek = ' ';
       return newToken(str, EXP);
@@ -308,7 +308,7 @@ TOKEN* scan() {
     return newToken(str, HAS_DOLLAR);
   }
 
-  /*×Ö·û´®*/
+  /*å­—ç¬¦ä¸²*/
   if ((lexer.last && lexer.last->tag == '=') || lexer.peek == '"' ||
       lexer.peek == '\'') {
     char* str;
@@ -329,14 +329,14 @@ TOKEN* scan() {
     return newToken(str, STRING);
   }
 
-  /*ËãÊõ±í´ïÊ½ ((...)) */
+  /*ç®—æœ¯è¡¨è¾¾å¼ ((...)) */
   if (lexer.peek == '(') {
     _readch();
     if (lexer.peek == '(') {
       _readch();
       char* str = newStr(0);
       int len = 0;
-      int cnt = 0;  //Í¨¹ıÀ¨ºÅÆ¥Åä£¬Ê¹±í´ïÊ½ÖĞµÄ "))"²»±»Îó½âÎöÎª½áÊø·Ö½ç·û
+      int cnt = 0;  //é€šè¿‡æ‹¬å·åŒ¹é…ï¼Œä½¿è¡¨è¾¾å¼ä¸­çš„ "))"ä¸è¢«è¯¯è§£æä¸ºç»“æŸåˆ†ç•Œç¬¦
       while (!(cnt == -1 && lexer.peek == ')' && lexer.last_peek == ')')) {
         if (lexer.peek == ' ') {
           _readch();
@@ -347,7 +347,7 @@ TOKEN* scan() {
         if (lexer.peek == ')') cnt--;
         _readch();
       }
-      //µ¹ÊıµÚ¶ş¸ö')'²»Ó¦³öÏÖÔÚ±í´ïÊ½ÖĞ
+      //å€’æ•°ç¬¬äºŒä¸ª')'ä¸åº”å‡ºç°åœ¨è¡¨è¾¾å¼ä¸­
       str[--len] = '\0';
       lexer.peek = ' ';
       return newToken(str, EXP);
@@ -356,14 +356,14 @@ TOKEN* scan() {
     }
   }
 
-  /*Ìõ¼ş²âÊÔ [[ ... ]]*/
+  /*æ¡ä»¶æµ‹è¯• [[ ... ]]*/
   if (lexer.peek == '[') {
     _readch();
     if (lexer.peek == '[') {
       _readch();
       char* str = newStr(0);
       int len = 0;
-      int cnt = 0;  //Í¨¹ıÀ¨ºÅÆ¥Åä£¬Ê¹±í´ïÊ½ÖĞµÄ "]]"²»±»Îó½âÎöÎª½áÊø·Ö½ç·û
+      int cnt = 0;  //é€šè¿‡æ‹¬å·åŒ¹é…ï¼Œä½¿è¡¨è¾¾å¼ä¸­çš„ "]]"ä¸è¢«è¯¯è§£æä¸ºç»“æŸåˆ†ç•Œç¬¦
       while (!(cnt == -1 && lexer.peek == ']' && lexer.last_peek == ']')) {
         if (lexer.peek == ' ') continue;
         str[len++] = lexer.peek;
@@ -371,7 +371,7 @@ TOKEN* scan() {
         if (lexer.peek == ']') cnt--;
         _readch();
       }
-      //µ¹ÊıµÚ¶ş¸ö']'²»Ó¦³öÏÖÔÚ±í´ïÊ½ÖĞ
+      //å€’æ•°ç¬¬äºŒä¸ª']'ä¸åº”å‡ºç°åœ¨è¡¨è¾¾å¼ä¸­
       str[--len] = '\0';
       lexer.peek = ' ';
       return newToken(str, EXP);
@@ -380,13 +380,13 @@ TOKEN* scan() {
     }
   }
 
-  /*ÎÄ¼şÂ·¾¶, Ô¼¶¨Ö»ÓĞÏà¶ÔÂ·¾¶*/
+  /*æ–‡ä»¶è·¯å¾„, çº¦å®šåªæœ‰ç›¸å¯¹è·¯å¾„*/
   if ((lexer.last && lexer.last_peek == '.') && lexer.peek == '\\') {
     char* str = readStr();
     return newToken(str, FILE_PATH);
   }
 
-  /*ÆäËûµ¥×Ö·û*/
+  /*å…¶ä»–å•å­—ç¬¦*/
   TOKEN* t = newToken(newStr(lexer.peek), lexer.peek);
   lexer.peek = ' ';
 

@@ -185,8 +185,8 @@ char* infoTransform(char* str) {
   return str;
 }
 
-//´´½¨ĞÂÄ¿Â¼
-// mkdir directory ¡Ì
+//åˆ›å»ºæ–°ç›®å½•
+// mkdir directory âˆš
 void createDirectory(const char* target) {
   char* infostr1 = "create failed";
   int isSuccess;
@@ -194,8 +194,8 @@ void createDirectory(const char* target) {
   if (!isSuccess) infoTransform(infostr1);
 }
 
-//´´½¨ĞÂÎÄ¼ş
-// touch filename ¡Ì
+//åˆ›å»ºæ–°æ–‡ä»¶
+// touch filename âˆš
 void createFile(const char* target) {
   char* infostr1 = "file already existed, create failed\n";
   char* infostr2 = "create failed\n";
@@ -215,8 +215,8 @@ void createFile(const char* target) {
   CloseHandle(existFile);
 }
 
-//¶ÁÈ¡ÎÄ¼şÄÚÈİ
-// read filename ¡Ì
+//è¯»å–æ–‡ä»¶å†…å®¹
+// read filename âˆš
 void readFile(const char* target) {
   char* infostr1 = "file not existed/file open failed\n";
   char* infostr2 = "readfile failed\n";
@@ -246,8 +246,8 @@ void readFile(const char* target) {
   }
 }
 
-//É¾³ıÎÄ¼ş
-// rm filename ¡Ì
+//åˆ é™¤æ–‡ä»¶
+// rm filename âˆš
 void deleteFile(const char* target) {
   char* infostr1 = "can't find ";
   char* infostr2 = "delete failed, the file might be using or need authority ";
@@ -271,7 +271,7 @@ void deleteFile(const char* target) {
   }
 }
 
-//ÔÚµ±Ç°Ä¿Â¼ÏÂ¸ù¾İÕıÔò±í´ïÊ½²éÕÒÎÄ¼ş£¨Ä¿Â¼+ÎÄ¼ş£©
+//åœ¨å½“å‰ç›®å½•ä¸‹æ ¹æ®æ­£åˆ™è¡¨è¾¾å¼æŸ¥æ‰¾æ–‡ä»¶ï¼ˆç›®å½•+æ–‡ä»¶ï¼‰
 // find -r regex
 
 void findfile(const char* regex) {
@@ -306,7 +306,7 @@ void findfile(const char* regex) {
   _findclose(hnd);
 }
 
-//ÔÚµ±Ç°Ä¿Â¼ÏÂ²éÕÒÏàÓ¦ÀàĞÍµÄÎÄ¼ş£¨Ä¿Â¼+ÎÄ¼ş£©
+//åœ¨å½“å‰ç›®å½•ä¸‹æŸ¥æ‰¾ç›¸åº”ç±»å‹çš„æ–‡ä»¶ï¼ˆç›®å½•+æ–‡ä»¶ï¼‰
 // find -t type
 
 void findfile3(const char* type) {
@@ -346,7 +346,7 @@ void findfile3(const char* type) {
   _findclose(hnd);
 }
 
-//ÔÚµ±Ç°Ä¿Â¼ÏÂ¸ù¾İ¹Ø¼ü×Ö²éÕÒÎÄ¼ş£¨Ä¿Â¼+ÎÄ¼ş£©
+//åœ¨å½“å‰ç›®å½•ä¸‹æ ¹æ®å…³é”®å­—æŸ¥æ‰¾æ–‡ä»¶ï¼ˆç›®å½•+æ–‡ä»¶ï¼‰
 // find -k key
 void findfile2(char* key) {
   struct _finddata_t data;
@@ -391,7 +391,7 @@ void findfile2(char* key) {
   _findclose(hnd);
 }
 
-//ÁĞ³öµ±Ç°Ä¿Â¼ÏÂµÄËùÓĞÎÄ¼ş£¨Ä¿Â¼+ÎÄ¼ş£©
+//åˆ—å‡ºå½“å‰ç›®å½•ä¸‹çš„æ‰€æœ‰æ–‡ä»¶ï¼ˆç›®å½•+æ–‡ä»¶ï¼‰
 // ls
 void curdirlist() {
   struct _finddata_t data;
@@ -425,8 +425,8 @@ void curdirlist() {
 }
 
 /*
-ÔİÊ±·Ï³ı
-//ÁĞ³öÖ¸¶¨Ä¿Â¼ÏÂµÄËùÓĞÎÄ¼ş£¨Ä¿Â¼+ÎÄ¼ş£©
+æš‚æ—¶åºŸé™¤
+//åˆ—å‡ºæŒ‡å®šç›®å½•ä¸‹çš„æ‰€æœ‰æ–‡ä»¶ï¼ˆç›®å½•+æ–‡ä»¶ï¼‰
 // ls directory
 
 
@@ -465,8 +465,8 @@ void dirlist(const char* path) {
 }
 */
 
-//É¾³ıÄ¿Â¼£¨ÓĞÇÒ½öµ±Ä¿Â¼Îª¿Õ£©
-// rmdir directory ¡Ì
+//åˆ é™¤ç›®å½•ï¼ˆæœ‰ä¸”ä»…å½“ç›®å½•ä¸ºç©ºï¼‰
+// rmdir directory âˆš
 void removeDirectory(const char* target) {
   char* infostr1 = "delete failed, the directory might not empty";
   int isSuccess;
@@ -474,8 +474,8 @@ void removeDirectory(const char* target) {
   if (!isSuccess) infoTransform(infostr1);
 }
 
-//¸´ÖÆÎÄ¼ş
-// cp -f sourcefile targetfile ¡Ì
+//å¤åˆ¶æ–‡ä»¶
+// cp -f sourcefile targetfile âˆš
 void fileCopy(const char* source, const char* target) {
   char* infostr1 = "source path and target path can't be same";
   char* infostr2 = "copy failed";
@@ -489,8 +489,8 @@ void fileCopy(const char* source, const char* target) {
   }
 }
 
-//ÒÆ¶¯ÎÄ¼ş
-// mv  sourcefile targetfile ¡Ì
+//ç§»åŠ¨æ–‡ä»¶
+// mv  sourcefile targetfile âˆš
 void movefile(const char* source, const char* target) {
   char* infostr1 = "move failed\n";
   int isSuccess;
@@ -502,8 +502,8 @@ void movefile(const char* source, const char* target) {
   }
 }
 
-//ÖØÃüÃûÎÄ¼ş
-// rename -f preName LaterName ¡Ì
+//é‡å‘½åæ–‡ä»¶
+// rename -f preName LaterName âˆš
 void fileReName(const char* source, const char* target) {
   char* infostr1 = "can't find ";
   char* infostr2 = "rename failed";
@@ -524,8 +524,8 @@ void fileReName(const char* source, const char* target) {
   }
 }
 
-//»ñÈ¡µ±Ç°Â·¾¶
-// pwd ¡Ì
+//è·å–å½“å‰è·¯å¾„
+// pwd âˆš
 void getCurDirectory() {
   DWORD length;
   TCHAR* path = NULL;
@@ -537,18 +537,18 @@ void getCurDirectory() {
   printf("%ls\n", path);
 }
 
-//»ñÈ¡µ±Ç°Ê±¼ä
-// date ¡Ì
+//è·å–å½“å‰æ—¶é—´
+// date âˆš
 void getTime() {
   SYSTEMTIME sys;
   GetLocalTime(&sys);
-  printf("%4d/%02d/%02d %02d:%02d:%02d.%03d ÖÜ%1d\n", sys.wYear, sys.wMonth,
+  printf("%4d/%02d/%02d %02d:%02d:%02d.%03d å‘¨%1d\n", sys.wYear, sys.wMonth,
          sys.wDay, sys.wHour, sys.wMinute, sys.wSecond, sys.wMilliseconds,
          sys.wDayOfWeek);
 }
 
-//ÏÔÊ¾µ±Ç°ËùÓĞ½ø³ÌÁĞ±í
-// ps ¡Ì
+//æ˜¾ç¤ºå½“å‰æ‰€æœ‰è¿›ç¨‹åˆ—è¡¨
+// ps âˆš
 void processShow() {
   int ProcessNum = 0;
   PROCESSENTRY32 currentProcess;
@@ -569,8 +569,8 @@ void processShow() {
   }
 }
 
-//ÏÔÊ¾µ±Ç°¶ÔÓ¦»·¾³±äÁ¿µÄÖµ
-// enviable variable ¡Ì
+//æ˜¾ç¤ºå½“å‰å¯¹åº”ç¯å¢ƒå˜é‡çš„å€¼
+// enviable variable âˆš
 void environShow(const char* target) {
   char* infostr1 = "can't find variable";
   wchar_t buffer[MAX_PATH];
@@ -588,9 +588,9 @@ void environShow(const char* target) {
   }
 }
 
-//  ĞÂ½¨|ÉèÖÃ»·¾³±äÁ¿
-//  (×¢Òâ£¬¸ÃÃüÁî¶Ô»·¾³±äÁ¿²¢Ã»ÓĞÖ±½ÓÓ°Ïì£¬Ö»ÒªshellÒ»½áÊø£¬ĞÂ½¨µÄ±äÁ¿Á¢¿ÌÏú»Ù)
-// set variable value ¡Ì
+//  æ–°å»º|è®¾ç½®ç¯å¢ƒå˜é‡
+//  (æ³¨æ„ï¼Œè¯¥å‘½ä»¤å¯¹ç¯å¢ƒå˜é‡å¹¶æ²¡æœ‰ç›´æ¥å½±å“ï¼Œåªè¦shellä¸€ç»“æŸï¼Œæ–°å»ºçš„å˜é‡ç«‹åˆ»é”€æ¯)
+// set variable value âˆš
 void setenviable(const char* target, const char* value) {
   char* infostr1 = "variable set failed";
   int isSuccess;
@@ -603,31 +603,31 @@ void setenviable(const char* target, const char* value) {
   }
 }
 
-// ÉèÖÃµ±Ç°¹¤×÷Â·¾¶
-// cd target ¡Ì
+// è®¾ç½®å½“å‰å·¥ä½œè·¯å¾„
+// cd target âˆš
 void setcurrentdirectory(const char* target) {
   printf("target:%s\n", target);
   SetCurrentDirectoryA(target);
   CURDIR = target;
 }
 
-// ÏÔÊ¾ÏûÏ¢£¬½«ÃüÁî»ØÏÔ
-// echo str ¡Ì
+// æ˜¾ç¤ºæ¶ˆæ¯ï¼Œå°†å‘½ä»¤å›æ˜¾
+// echo str âˆš
 void echo(const char* str) {
   infoTransform(str);
   printf("%s\n", str);
 }
 
-// Çå³ıÆÁÄ»
+// æ¸…é™¤å±å¹•
 // cls
 void cls() { system("cls"); }
 
 void pauseP() { system("pause"); }
 
-// shell°ïÖú½çÃæ
+// shellå¸®åŠ©ç•Œé¢
 // help
 void helprint() {
-  printf("shell°ïÖú£¬ÊäÈëhelp»ñÈ¡±¾°ïÖú\n");
+  printf("shellå¸®åŠ©ï¼Œè¾“å…¥helpè·å–æœ¬å¸®åŠ©\n");
   char* rule1 = "mkdir";
   char* rule2 = "touch";
   char* rule3 = "cat";
@@ -647,23 +647,23 @@ void helprint() {
   char* rule15 = "echo";
   char* rule18 = "cls";
   char* rule19 = "pause";
-  printf("%-10s ´´½¨ĞÂÄ¿Â¼\n", rule1);
-  printf("%-10s ´´½¨ĞÂÎÄ¼ş\n", rule2);
-  printf("%-10s ¶ÁÈ¡ÎÄ¼şÄÚÈİ\n", rule3);
-  printf("%-10s É¾³ıÎÄ¼ş\n", rule4);
-  printf("%-10s É¾³ı¿ÕÄ¿Â¼\n", rule5);
-  printf("%-10s ¸´ÖÆÎÄ¼ş\n", rule6);
-  printf("%-10s ÒÆ¶¯ÎÄ¼ş\n", rule7);
-  printf("%-10s ÖØÃüÃûÎÄ¼ş\n", rule8);
-  printf("%-10s ÏÔÊ¾µ±Ç°Â·¾¶\n", rule9);
-  printf("%-10s ÏÔÊ¾µ±Ç°ÈÕÆÚÊ±¼ä\n", rule10);
-  printf("%-10s ÏÔÊ¾½ø³ÌÁĞ±í\n", rule11);
-  printf("%-10s ²éÑ¯»·¾³±äÁ¿\n", rule12);
-  printf("%-10s ĞŞ¸Ä/ĞÂ½¨»·¾³±äÁ¿\n", rule13);
-  printf("%-10s ÔÚµ±Ç°Ä¿Â¼ÖĞ¸ù¾İÕıÔò±í´ïÊ½²éÕÒÎÄ¼ş\n", rule14);
-  printf("%-10s ÔÚµ±Ç°Ä¿Â¼ÖĞ²éÕÒÖ¸¶¨ÀàĞÍµÄÎÄ¼ş\n", rule16);
-  printf("%-10s ÔÚµ±Ç°Ä¿Â¼ÖĞ¸ù¾İ¹Ø¼ü×Ö²éÕÒÎÄ¼ş\n", rule17);
-  printf("%-10s ÏÔÊ¾ÏûÏ¢£¬½«ÃüÁî»ØÏÔ\n", rule15);
-  printf("%-10s Çå³ıÆÁÄ»\n", rule18);
-  printf("%-10s ÔİÍ£\n", rule19);
+  printf("%-10s åˆ›å»ºæ–°ç›®å½•\n", rule1);
+  printf("%-10s åˆ›å»ºæ–°æ–‡ä»¶\n", rule2);
+  printf("%-10s è¯»å–æ–‡ä»¶å†…å®¹\n", rule3);
+  printf("%-10s åˆ é™¤æ–‡ä»¶\n", rule4);
+  printf("%-10s åˆ é™¤ç©ºç›®å½•\n", rule5);
+  printf("%-10s å¤åˆ¶æ–‡ä»¶\n", rule6);
+  printf("%-10s ç§»åŠ¨æ–‡ä»¶\n", rule7);
+  printf("%-10s é‡å‘½åæ–‡ä»¶\n", rule8);
+  printf("%-10s æ˜¾ç¤ºå½“å‰è·¯å¾„\n", rule9);
+  printf("%-10s æ˜¾ç¤ºå½“å‰æ—¥æœŸæ—¶é—´\n", rule10);
+  printf("%-10s æ˜¾ç¤ºè¿›ç¨‹åˆ—è¡¨\n", rule11);
+  printf("%-10s æŸ¥è¯¢ç¯å¢ƒå˜é‡\n", rule12);
+  printf("%-10s ä¿®æ”¹/æ–°å»ºç¯å¢ƒå˜é‡\n", rule13);
+  printf("%-10s åœ¨å½“å‰ç›®å½•ä¸­æ ¹æ®æ­£åˆ™è¡¨è¾¾å¼æŸ¥æ‰¾æ–‡ä»¶\n", rule14);
+  printf("%-10s åœ¨å½“å‰ç›®å½•ä¸­æŸ¥æ‰¾æŒ‡å®šç±»å‹çš„æ–‡ä»¶\n", rule16);
+  printf("%-10s åœ¨å½“å‰ç›®å½•ä¸­æ ¹æ®å…³é”®å­—æŸ¥æ‰¾æ–‡ä»¶\n", rule17);
+  printf("%-10s æ˜¾ç¤ºæ¶ˆæ¯ï¼Œå°†å‘½ä»¤å›æ˜¾\n", rule15);
+  printf("%-10s æ¸…é™¤å±å¹•\n", rule18);
+  printf("%-10s æš‚åœ\n", rule19);
 }

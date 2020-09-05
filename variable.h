@@ -8,7 +8,7 @@ typedef union val {
 } VAL;
 typedef enum {STR, _INT} VAR_TYPE;
 /*
-	±äÁ¿
+	å˜é‡
 */
 typedef struct var {
   char* name;
