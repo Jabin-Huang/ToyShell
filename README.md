@@ -1,5 +1,8 @@
 # ToyShell
-Linux-style shell script interpreter for fun. Linux风格shell脚本玩具解释器。
+Linux-style shell script interpreter based on Windows APIs. 
+I Write it just for fun.
+
+Linux风格shell脚本玩具解释器。
 
 使用方法： 
 
